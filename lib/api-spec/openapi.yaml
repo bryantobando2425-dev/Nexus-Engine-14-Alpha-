@@ -1,0 +1,1090 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 1.0.0
+  description: NEXUS ENGINE API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: players
+    description: Player management
+  - name: runs
+    description: Game run management
+  - name: narrative
+    description: AI narrative generation
+  - name: world
+    description: World state management
+  - name: events
+    description: Run event management
+  - name: legacy
+    description: Cross-run legacy/echo system
+  - name: moments
+    description: Image moments management
+  - name: achievements
+    description: Achievement system
+  - name: maps
+    description: World map management
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /players:
+    post:
+      operationId: createPlayer
+      tags: [players]
+      summary: Create or get player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePlayerBody"
+      responses:
+        "200":
+          description: Player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+  /players/{playerId}:
+    get:
+      operationId: getPlayer
+      tags: [players]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+    put:
+      operationId: updatePlayer
+      tags: [players]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePlayerBody"
+      responses:
+        "200":
+          description: Updated player
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+  /players/{playerId}/stats:
+    get:
+      operationId: getPlayerStats
+      tags: [players]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerStats"
+  /runs:
+    post:
+      operationId: createRun
+      tags: [runs]
+      summary: Start a new game run
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRunBody"
+      responses:
+        "201":
+          description: Created run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+  /runs/{runId}:
+    get:
+      operationId: getRun
+      tags: [runs]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+    put:
+      operationId: updateRun
+      tags: [runs]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRunBody"
+      responses:
+        "200":
+          description: Updated run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+  /runs/player/{playerId}:
+    get:
+      operationId: getPlayerRuns
+      tags: [runs]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Run"
+  /runs/{runId}/end:
+    post:
+      operationId: endRun
+      tags: [runs]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EndRunBody"
+      responses:
+        "200":
+          description: Ended run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+  /narrative/generate:
+    post:
+      operationId: generateNarrative
+      tags: [narrative]
+      summary: Generate narrative response from Claude
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateNarrativeBody"
+      responses:
+        "200":
+          description: Narrative response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NarrativeResponse"
+  /narrative/summarize-run:
+    post:
+      operationId: summarizeRun
+      tags: [narrative]
+      summary: Generate end-of-run summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SummarizeRunBody"
+      responses:
+        "200":
+          description: Run summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunSummary"
+  /events:
+    post:
+      operationId: createEvent
+      tags: [events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventBody"
+      responses:
+        "201":
+          description: Created event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunEvent"
+  /events/run/{runId}:
+    get:
+      operationId: getRunEvents
+      tags: [events]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Run events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RunEvent"
+  /legacy/echoes/player/{playerId}:
+    get:
+      operationId: getPlayerEchoes
+      tags: [legacy]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Legacy echoes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LegacyEcho"
+  /legacy/echoes/run/{runId}/resolve:
+    post:
+      operationId: resolveEchoesForRun
+      tags: [legacy]
+      summary: Resolve which echoes are available for a new run
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveEchoesBody"
+      responses:
+        "200":
+          description: Available echoes for this run
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LegacyEcho"
+  /legacy/process/{runId}:
+    post:
+      operationId: processRunIntoLegacy
+      tags: [legacy]
+      summary: Process ended run into legacy echoes
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Created echoes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessLegacyResponse"
+  /moments:
+    post:
+      operationId: saveMoment
+      tags: [moments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveMomentBody"
+      responses:
+        "201":
+          description: Saved moment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Moment"
+  /moments/player/{playerId}:
+    get:
+      operationId: getPlayerMoments
+      tags: [moments]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: runId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Moments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Moment"
+  /moments/{momentId}/favorite:
+    put:
+      operationId: toggleMomentFavorite
+      tags: [moments]
+      parameters:
+        - name: momentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToggleFavoriteBody"
+      responses:
+        "200":
+          description: Updated moment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Moment"
+  /achievements/player/{playerId}:
+    get:
+      operationId: getPlayerAchievements
+      tags: [achievements]
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Achievements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Achievement"
+  /achievements:
+    post:
+      operationId: unlockAchievement
+      tags: [achievements]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnlockAchievementBody"
+      responses:
+        "201":
+          description: Achievement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Achievement"
+  /maps:
+    post:
+      operationId: saveWorldMap
+      tags: [maps]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveMapBody"
+      responses:
+        "201":
+          description: Saved map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorldMap"
+  /maps/run/{runId}:
+    get:
+      operationId: getRunMap
+      tags: [maps]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: World map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorldMap"
+    put:
+      operationId: updateRunMap
+      tags: [maps]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMapBody"
+      responses:
+        "200":
+          description: Updated map
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorldMap"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        username:
+          type: string
+        createdAt:
+          type: string
+        settings:
+          type: object
+          additionalProperties: true
+        totalRuns:
+          type: integer
+        totalPlaytimeMinutes:
+          type: integer
+      required:
+        - id
+        - username
+        - createdAt
+        - settings
+        - totalRuns
+        - totalPlaytimeMinutes
+    CreatePlayerBody:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        username:
+          type: string
+        settings:
+          type: object
+          additionalProperties: true
+      required:
+        - username
+    UpdatePlayerBody:
+      type: object
+      properties:
+        username:
+          type: string
+        settings:
+          type: object
+          additionalProperties: true
+    PlayerStats:
+      type: object
+      properties:
+        totalRuns:
+          type: integer
+        completedRuns:
+          type: integer
+        abandonedRuns:
+          type: integer
+        totalPlaytimeMinutes:
+          type: integer
+        totalInGameYears:
+          type: number
+        deathsByCause:
+          type: object
+          additionalProperties:
+            type: integer
+        erasExplored:
+          type: array
+          items:
+            type: string
+        mostUsedVoice:
+          type: string
+          nullable: true
+      required:
+        - totalRuns
+        - completedRuns
+        - abandonedRuns
+        - totalPlaytimeMinutes
+        - totalInGameYears
+        - deathsByCause
+        - erasExplored
+    Run:
+      type: object
+      properties:
+        id:
+          type: string
+        playerId:
+          type: string
+        gameId:
+          type: string
+        status:
+          type: string
+          enum: [active, completed, abandoned]
+        startedAt:
+          type: string
+        endedAt:
+          type: string
+          nullable: true
+        endCause:
+          type: string
+          nullable: true
+        eraConfig:
+          type: object
+          additionalProperties: true
+        character:
+          type: object
+          additionalProperties: true
+        finalState:
+          type: object
+          additionalProperties: true
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+      required:
+        - id
+        - playerId
+        - gameId
+        - status
+        - startedAt
+        - eraConfig
+        - character
+    CreateRunBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        gameId:
+          type: string
+        eraConfig:
+          type: object
+          additionalProperties: true
+        character:
+          type: object
+          additionalProperties: true
+      required:
+        - playerId
+        - gameId
+        - eraConfig
+        - character
+    UpdateRunBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, completed, abandoned]
+        endCause:
+          type: string
+        finalState:
+          type: object
+          additionalProperties: true
+        summary:
+          type: string
+        character:
+          type: object
+          additionalProperties: true
+    EndRunBody:
+      type: object
+      properties:
+        endCause:
+          type: string
+          enum: [death, player_choice, catastrophe]
+        finalState:
+          type: object
+          additionalProperties: true
+      required:
+        - endCause
+    GenerateNarrativeBody:
+      type: object
+      properties:
+        runId:
+          type: string
+        playerId:
+          type: string
+        gameConfig:
+          type: object
+          additionalProperties: true
+        voice:
+          type: string
+          enum: [third_person, first_person, world_speaks, god_mode]
+        tone:
+          type: object
+          additionalProperties: true
+        character:
+          type: object
+          additionalProperties: true
+        worldState:
+          type: object
+          additionalProperties: true
+        recentHistory:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        activeEchoes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        playerAction:
+          type: string
+        currentLocation:
+          type: object
+          additionalProperties: true
+        inGameDateTime:
+          type: string
+        era:
+          type: object
+          additionalProperties: true
+      required:
+        - playerAction
+        - voice
+        - tone
+        - character
+        - worldState
+        - currentLocation
+        - inGameDateTime
+        - era
+        - gameConfig
+    NarrativeResponse:
+      type: object
+      properties:
+        narrative:
+          type: string
+        timeAdvanced:
+          type: integer
+        eventType:
+          type: string
+          nullable: true
+        legacyWeight:
+          type: number
+        shouldGenerateImage:
+          type: boolean
+        mood:
+          type: string
+          nullable: true
+        characterStatChanges:
+          type: object
+          additionalProperties: true
+          nullable: true
+      required:
+        - narrative
+        - timeAdvanced
+        - legacyWeight
+        - shouldGenerateImage
+    SummarizeRunBody:
+      type: object
+      properties:
+        runId:
+          type: string
+        events:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        character:
+          type: object
+          additionalProperties: true
+        era:
+          type: object
+          additionalProperties: true
+        endCause:
+          type: string
+      required:
+        - runId
+        - events
+        - character
+        - era
+        - endCause
+    RunSummary:
+      type: object
+      properties:
+        summary:
+          type: string
+      required:
+        - summary
+    RunEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        runId:
+          type: string
+        timestampIngame:
+          type: string
+        timestampReal:
+          type: string
+        eventType:
+          type: string
+        eventData:
+          type: object
+          additionalProperties: true
+        narrativeSnapshot:
+          type: string
+        legacyWeight:
+          type: number
+        location:
+          type: object
+          additionalProperties: true
+          nullable: true
+        isHidden:
+          type: boolean
+        hiddenDifficulty:
+          type: number
+          nullable: true
+      required:
+        - id
+        - runId
+        - timestampIngame
+        - timestampReal
+        - eventType
+        - eventData
+        - narrativeSnapshot
+        - legacyWeight
+        - isHidden
+    CreateEventBody:
+      type: object
+      properties:
+        runId:
+          type: string
+        timestampIngame:
+          type: string
+        eventType:
+          type: string
+        eventData:
+          type: object
+          additionalProperties: true
+        narrativeSnapshot:
+          type: string
+        legacyWeight:
+          type: number
+        location:
+          type: object
+          additionalProperties: true
+          nullable: true
+        isHidden:
+          type: boolean
+        hiddenDifficulty:
+          type: number
+          nullable: true
+      required:
+        - runId
+        - timestampIngame
+        - eventType
+        - eventData
+        - narrativeSnapshot
+        - legacyWeight
+        - isHidden
+    LegacyEcho:
+      type: object
+      properties:
+        id:
+          type: string
+        sourceRunId:
+          type: string
+        playerId:
+          type: string
+        gameId:
+          type: string
+        echoType:
+          type: string
+        echoData:
+          type: object
+          additionalProperties: true
+        discoveryDifficulty:
+          type: number
+        isDiscovered:
+          type: boolean
+        discoveredInRunId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - sourceRunId
+        - playerId
+        - gameId
+        - echoType
+        - echoData
+        - discoveryDifficulty
+        - isDiscovered
+        - createdAt
+    ResolveEchoesBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        gameId:
+          type: string
+        eraYear:
+          type: integer
+          nullable: true
+        mapSeed:
+          type: string
+      required:
+        - playerId
+        - gameId
+    ProcessLegacyResponse:
+      type: object
+      properties:
+        echoesCreated:
+          type: integer
+        echoes:
+          type: array
+          items:
+            $ref: "#/components/schemas/LegacyEcho"
+      required:
+        - echoesCreated
+        - echoes
+    Moment:
+      type: object
+      properties:
+        id:
+          type: string
+        runId:
+          type: string
+        playerId:
+          type: string
+        imageUrl:
+          type: string
+        promptUsed:
+          type: string
+        contextSnapshot:
+          type: string
+        ingameDate:
+          type: string
+        createdAt:
+          type: string
+        isFavorite:
+          type: boolean
+      required:
+        - id
+        - runId
+        - playerId
+        - imageUrl
+        - promptUsed
+        - contextSnapshot
+        - ingameDate
+        - createdAt
+        - isFavorite
+    SaveMomentBody:
+      type: object
+      properties:
+        runId:
+          type: string
+        playerId:
+          type: string
+        imageUrl:
+          type: string
+        promptUsed:
+          type: string
+        contextSnapshot:
+          type: string
+        ingameDate:
+          type: string
+      required:
+        - runId
+        - playerId
+        - imageUrl
+        - promptUsed
+        - contextSnapshot
+        - ingameDate
+    ToggleFavoriteBody:
+      type: object
+      properties:
+        isFavorite:
+          type: boolean
+      required:
+        - isFavorite
+    Achievement:
+      type: object
+      properties:
+        id:
+          type: string
+        playerId:
+          type: string
+        achievementKey:
+          type: string
+        unlockedAt:
+          type: string
+        runId:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - playerId
+        - achievementKey
+        - unlockedAt
+    UnlockAchievementBody:
+      type: object
+      properties:
+        playerId:
+          type: string
+        achievementKey:
+          type: string
+        runId:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+      required:
+        - playerId
+        - achievementKey
+    WorldMap:
+      type: object
+      properties:
+        id:
+          type: string
+        runId:
+          type: string
+        mapSeed:
+          type: string
+        terrainData:
+          type: object
+          additionalProperties: true
+        pointsOfInterest:
+          type: object
+          additionalProperties: true
+        legacyMarkers:
+          type: object
+          additionalProperties: true
+        generatedAt:
+          type: string
+      required:
+        - id
+        - runId
+        - mapSeed
+        - terrainData
+        - pointsOfInterest
+        - legacyMarkers
+        - generatedAt
+    SaveMapBody:
+      type: object
+      properties:
+        runId:
+          type: string
+        mapSeed:
+          type: string
+        terrainData:
+          type: object
+          additionalProperties: true
+        pointsOfInterest:
+          type: object
+          additionalProperties: true
+        legacyMarkers:
+          type: object
+          additionalProperties: true
+      required:
+        - runId
+        - mapSeed
+        - terrainData
+        - pointsOfInterest
+        - legacyMarkers
+    UpdateMapBody:
+      type: object
+      properties:
+        terrainData:
+          type: object
+          additionalProperties: true
+        pointsOfInterest:
+          type: object
+          additionalProperties: true
+        legacyMarkers:
+          type: object
+          additionalProperties: true
