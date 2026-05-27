@@ -1,0 +1,22 @@
+packages:
+  "zustand": "State management for player session and active run data"
+  "framer-motion": "Cinematic page transitions, panel slide-ins, and text fade-ins"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes without style conflicts"
+  "date-fns": "Formatting in-game and real-world timestamps"
+
+images:
+  - path: "artifacts/nexus-engine/public/images/hero-bg.png"
+    description: "Dark cinematic abstract background with deep blacks, subtle teal and indigo nebulous forms, volumetric lighting, highly atmospheric, no text"
+    aspect_ratio: "16:9"
+  - path: "artifacts/nexus-engine/public/images/nexus-logo.png"
+    description: "Minimalist geometric futuristic logo mark in deep glowing blue on transparent background, sharp edges, esoteric vibe"
+    aspect_ratio: "1:1"
+  - path: "artifacts/nexus-engine/public/images/moment-placeholder.png"
+    description: "Cinematic realistic illustration of an ancient forgotten ruin in a dark forest, painterly style, atmospheric lighting, moody"
+    aspect_ratio: "16:9"
+
+notes:
+  - "App uses generated Orval hooks from @workspace/api-client-react for all API calls"
+  - "Requires Supabase and Anthropic integrations on the backend to function fully"
+  - "Zustand is used for local player ID persistence and current run state"
