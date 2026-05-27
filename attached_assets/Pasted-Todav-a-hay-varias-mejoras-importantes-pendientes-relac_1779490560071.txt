@@ -1,0 +1,248 @@
+Todavía hay varias mejoras importantes pendientes relacionadas con el sistema de secciones personalizadas, edición avanzada y gestión del mundo.
+
+⸻
+
+1. VERIFICACIÓN GENERAL DEL SISTEMA DE PLANTILLAS (NO REESCRIBIR, SOLO VALIDAR)
+
+Debe verificarse que el sistema de plantillas globales de secciones personalizadas esté completamente funcional en todos los casos:
+
+* Creación de plantillas
+* Reutilización en nuevas partidas
+* Persistencia real entre sesiones
+* Compatibilidad con partidas guardadas e importadas
+
+Si algo no está funcionando correctamente, debe corregirse o completarse.
+
+⸻
+
+2. LÓGICA REAL Y COMPORTAMIENTO DE TIPOS DE CAMPOS (SECCIONES PERSONALIZADAS)
+
+Los tipos actuales deben mantenerse, pero su comportamiento debe ser consistente, estable y usable dentro de secciones personalizadas.
+
+Tipos:
+text, number, list, state, progress, date, header, table, column
+
+⸻
+
+text (CORRECCIÓN IMPORTANTE)
+
+* Debe permitir saltos de línea naturales dentro de campos
+* Los saltos de línea deben comportarse como en editores reales (ChatGPT / Notion / Obsidian)
+* NO deben generar saltos excesivos o dobles al presionar Enter
+* Actualmente el comportamiento de salto de línea es exagerado o duplicado y debe corregirse
+* Debe mejorar la legibilidad sin espacios innecesarios entre líneas
+* Debe mantener formato limpio, fluido y estándar
+
+⸻
+
+number
+
+* Valor cuantitativo dinámico dentro de secciones personalizadas
+* Usable por la IA en lógica narrativa
+* Evolución según eventos del mundo
+
+⸻
+
+list
+
+* Mejor estructura interna y legibilidad
+* Separación clara de elementos
+* Interpretación consistente por la IA
+
+⸻
+
+state
+
+* Estados persistentes dentro del sistema de secciones personalizadas
+* Impacto directo en narrativa y lógica del mundo
+
+⸻
+
+progress
+
+* Progreso dinámico coherente
+* Actualización basada en eventos narrativos
+
+⸻
+
+date
+
+* Integración con cronología narrativa
+* Coherencia temporal del mundo
+
+⸻
+
+header
+
+* Separador visual dentro de secciones personalizadas
+* No almacena datos
+
+⸻
+
+table / column (MEJORA NECESARIA)
+
+Actualmente presentan problemas de flexibilidad y usabilidad.
+
+Debe:
+
+* Mejorar la sintaxis para ser más natural
+* Evitar rigidez estructural
+* Permitir mayor escalabilidad de datos
+* Ser más fáciles de leer y editar en móvil y escritorio
+* Permitir estructuras complejas sin límites artificiales
+* Integrarse mejor con la IA sin depender de formatos rígidos
+
+⸻
+
+3. EDICIÓN Y USABILIDAD EN SECCIONES PERSONALIZADAS
+
+Debe mantenerse y verificarse que funcione correctamente:
+
+* Edición completa sin necesidad de eliminar secciones
+* Eliminación de campos siempre visible y accesible
+* Reorganización de campos estable y precisa (especialmente en móvil)
+* Acceso constante a herramientas de edición
+* Cambio de tipo de campo sin pérdida de información
+* Migración automática de datos sin corrupción
+
+⸻
+
+4. PROBLEMA CRÍTICO DE UI EN MÓVIL (NO SOLO BOTONES)
+
+Debe verificarse y corregirse la usabilidad completa en móvil.
+
+Problemas:
+
+* Botones demasiado pequeños o difíciles de pulsar
+* Acciones sensibles que pueden ejecutarse por error
+* Falta de zonas táctiles seguras
+* Controles poco cómodos en pantallas pequeñas
+
+REQUISITO:
+
+* Toda la interfaz debe estar optimizada para móvil real
+* No solo botones: también campos, menús y acciones
+* Debe evitar errores por toque accidental
+* Debe priorizar precisión y claridad
+
+Aplica a secciones personalizadas y a cualquier otro sistema afectado.
+
+⸻
+
+5. AUTO-CREACIÓN DE SISTEMAS DEL MUNDO (SECCIONES PERSONALIZADAS + SISTEMA NATIVO)
+
+La IA debe poder crear sistemas complejos del mundo usando tanto secciones personalizadas como sistemas nativos del juego.
+
+Esto incluye:
+
+* Creación de nuevas secciones personalizadas cuando sea necesario
+* Uso de sistemas nativos del juego cuando corresponda (NPCs, facciones, mundo, eventos)
+* Uso combinado de ambos sistemas cuando sea necesario
+
+⸻
+
+IMPORTANTE DE CLARIDAD
+
+* Las estructuras creadas dentro de secciones personalizadas pertenecen al sistema de secciones personalizadas
+* Las estructuras creadas en sistemas nativos pertenecen al sistema nativo del juego
+* Ambos sistemas pueden coexistir sin mezclarse conceptualmente
+
+⸻
+
+COMPORTAMIENTO DE LA IA
+
+* Cuando la IA cree una estructura nueva, debe marcarla como creada por IA
+* Estas estructuras deben integrarse dentro del sistema nativo del juego
+* Deben funcionar como sistemas nativos completos (actualizables, persistentes, modificables)
+* Deben mantener coherencia con el mundo del juego
+* Debe existir verificación de que todo esto esté correctamente implementado y funcionando
+* Si algo no está bien integrado o falta, debe corregirse
+
+⸻
+
+EDICIÓN DE ESTRUCTURAS CREADAS POR IA
+
+* El usuario debe poder editarlas completamente
+* Deben tener un editor funcional pero diferenciado del editor de secciones personalizadas
+* Deben comportarse como sistemas nativos reales una vez creadas
+* Debe verificarse que esta funcionalidad esté correctamente implementada
+
+⸻
+
+6. SISTEMA DE PLANTILLAS GLOBALES (SECCIONES PERSONALIZADAS)
+
+Debe existir un sistema de plantillas reutilizables exclusivamente para secciones personalizadas.
+
+Esto permite:
+
+* Crear estructuras una vez y reutilizarlas en múltiples partidas
+* Estandarizar sistemas complejos
+* Reducir repetición manual
+* Mantener compatibilidad entre partidas nuevas, guardadas e importadas
+* Versionado básico de plantillas
+
+IMPORTANTE:
+
+* Este sistema aplica únicamente a secciones personalizadas
+* No debe interferir con sistemas nativos del juego
+* Debe verificarse que todo el sistema funcione correctamente en todos los tipos de partida
+
+⸻
+
+7. PROBLEMA CRÍTICO: SALTOS DE LÍNEA INCORRECTOS EN CAMPOS
+
+Los saltos de línea dentro de los campos de secciones personalizadas actualmente:
+
+* Son demasiado grandes o exagerados
+* Se sienten artificiales o duplicados
+* No se comportan como editores estándar
+* Dificultan la lectura y la fluidez del texto
+
+REQUISITO:
+
+* Los saltos de línea deben ser naturales y estándar (como ChatGPT, Notion u Obsidian)
+* Un Enter = un salto normal, sin duplicaciones ni espacios excesivos
+* Debe corregirse el comportamiento actual de doble o exceso de salto
+* Debe mejorar la legibilidad general del contenido en campos
+
+⸻
+
+8. FORMATO Y NEGRITAS / CURSIVAS (ERROR CRÍTICO ACTUAL)
+
+Actualmente los formatos de texto enriquecido están rotos:
+
+* Negritas aparecen como texto
+* Cursivas y otros formatos no se renderizan correctamente
+* Este problema afecta tanto narrativa como secciones personalizadas
+
+REQUISITO:
+
+* Restaurar completamente el sistema de formato (negrita, cursiva, etc.)
+* Asegurar que se renderice correctamente en todas las áreas del sistema
+* Evitar que vuelva a romperse en futuras actualizaciones
+* Implementar un mecanismo o parche que proteja estos formatos de ser eliminados o ignorados
+* Verificar que el formato funcione en:
+    * Narración
+    * Secciones personalizadas
+    * Campos de texto
+    * Cualquier sistema de visualización de texto
+
+⸻
+
+NOTA SOBRE NARRACIÓN Y FORMATO
+
+La IA puede usar herramientas de formato (negrita, cursiva, saltos de línea, tablas u otras estructuras) dentro de la narración cuando sea útil para mejorar claridad, estilo o inmersión.
+
+Esto no es obligatorio, pero debe entenderse que el sistema tiene capacidad para usarlas si la narrativa lo requiere de forma natural.
+
+⸻
+
+APLICACIÓN OBLIGATORIA
+
+Todo lo anterior debe funcionar correctamente en:
+
+* Partidas nuevas
+* Partidas guardadas
+* Partidas importadas
+
+Sin excepciones.

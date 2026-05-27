@@ -1,0 +1,40 @@
+NEXUS ENGINE — Patch v4.7 (Direct Update)
+ESTRICTO: Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar la integridad total de la partida activa y sus datos. Prohibido omitir campos, reiniciar estados o tocar módulos que ya operan correctamente.
+
+1. SANEAMIENTO DE IDENTIDAD Y PLACEHOLDERS
+
+Eliminación Técnica: Queda terminantemente prohibido el uso de strings como __AUTO_INFANT__ en opciones, descripciones o botones.
+
+Identidad Real: Sustituir placeholders por descripciones reales en tiempo presente, coherentes con la edad exacta y el contexto narrativo. Los descriptores de conocimiento y habilidades deben reflejar lo vivido, sin niveles inflados.
+
+2. MUNDO, LOCALIZACIÓN Y GEOGRAFÍA
+
+Jerarquía de Capas: Mostrar ubicación como Territorio/Reino > Ciudad/Región > Sub-lugar específico. Cada lugar debe tener su ficha individual con descripción sensorial, clima, fauna y geografía.
+
+Geografía y Fauna: Organizar por lugar específico con buscador. El contenido debe ser estructurado y coherente con el bioma y la era.
+
+Sincronización de Mapa: Geocoding en coordenadas reales según la narración. Eliminar duplicados en el registro de lugares visitados; cada entrada debe ser única y linkear a su ficha.
+
+3. INVENTARIO Y ECONOMÍA CONTEXTUAL
+
+Ficha de Ítem: Mostrar peso, condición, origen y valor. Organizar vestimenta por capas (interior, exterior, calzado, etc.).
+
+Economía Real: Usar el nombre de la moneda real de la era/región. Añadir precios de referencia y estado económico del lugar actual.
+
+4. PRIORIDAD DE EJECUCIÓN Y PERSISTENCIA (MÁXIMA PRIORIDAD)
+
+Poblado Automático Total: La IA narrativa debe actualizar ABSOLUTAMENTE TODO (NPCs, Facciones, Relaciones, Mundo, etc.) de forma autónoma tras cada turno.
+
+Verificación de Flujo: Asegurar que lo que la IA escribe en el JSON sea leído y renderizado por el frontend sin errores.
+
+Integridad de Partida: Si un dato no cambió, se mantiene igual. No borrar información previa. Mantener funcionando: Legado, Psicología, Tiempo, Eventos, Política y Religión.
+
+ORDEN DE IMPORTANCIA:
+
+Poblado Automático y Persistencia (Actualizar todo el JSON tras cada turno).
+
+Corrección de Mundo y Localización (Jerarquías, fichas de lugar y limpieza de duplicados).
+
+Saneamiento de Identidad (Eliminar __AUTO_INFANT__ y ajustar descriptores a la edad).
+
+Inventario y Economía (Campos completos y moneda real).

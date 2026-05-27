@@ -1,0 +1,32 @@
+SYSTEM_UPDATE: NEXUS_PATCH_V4.8
+OBJETIVO: Eliminación de placeholders persistentes, corrección de renderizado de inventario/ubicaciones y estabilización de la lógica de estado.
+
+1. SANEAMIENTO DE IDENTIDAD (ANTI-PLACEHOLDER)
+
+Protocolo: Queda estrictamente prohibido el uso de strings como __AUTO_INFANT__ o descriptores genéricos en el JSON de salida.
+
+Ejecución: La IA debe procesar el estado actual del personaje (edad, condición física, hitos) y generar una descripción narrativa en tiempo real. Si el personaje es un niño, joven o anciano, la descripción y los descriptores de conocimiento deben reflejar su realidad contextual, no valores por defecto.
+
+2. ARQUITECTURA DE INVENTARIO Y ECONOMÍA
+
+Campos Requeridos: Cada ítem en el JSON debe incluir: nombre, descripción_narrativa, peso_contextual, procedencia, valor_moneda_local y estado_conservación.
+
+Vestimenta: Separar lógicamente vestimenta (por capas: interior, exterior, calzado) de objetos_generales.
+
+Moneda: Reemplazar el término "Monedas" por la divisa real de la era/región activa (ej: Maravedíes, Denarios, Créditos).
+
+3. LÓGICA DE LUGARES Y GEOPOSICIONAMIENTO
+
+Ubicación Jerárquica: El estado debe reflejar la jerarquía: Territorio/Reino > Ciudad/Región > Sub-lugar_actual.
+
+Sincronización: Cada lugar descubierto debe generar una entrada única en el registro de "Lugares Visitados". Prohibido duplicar IDs o nombres en la lista de renderizado.
+
+Fichas de Lugar: Cada ubicación debe contener su propia descripción_sensorial, clima, fauna y geografía específica, accesible mediante el frontend.
+
+4. PIPELINE DE ESCRITURA Y ESTADO
+
+Prioridad: Tras cada turno, la IA narrativa debe escribir las actualizaciones de Personas (NPCs), Relaciones y Facciones en el estado global.
+
+Consistencia: El frontend debe priorizar la lectura de estos nodos para evitar paneles vacíos. Si un NPC fue mencionado, su ficha debe existir y estar poblada con los datos conocidos.
+
+REGLA DE ORO: No omitir datos existentes. Si un valor no cambia, se preserva. La coherencia narrativa manda sobre cualquier automatización mecánica.

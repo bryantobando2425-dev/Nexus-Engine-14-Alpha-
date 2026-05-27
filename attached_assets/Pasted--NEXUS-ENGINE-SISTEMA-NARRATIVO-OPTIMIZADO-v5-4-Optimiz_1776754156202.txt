@@ -1,0 +1,342 @@
+⚙️ NEXUS ENGINE — SISTEMA NARRATIVO OPTIMIZADO v5.4
+
+Optimiza y corrige el sistema actual de NEXUS ENGINE sin romper ninguna funcionalidad existente ni alterar la experiencia del jugador.
+
+IMPORTANTE:
+
+* No eliminar sistemas actuales
+* No cambiar la lógica narrativa
+* No modificar las reglas ya implementadas
+* Mantener compatibilidad total con el sistema actual
+* La IA siempre debe generar narración
+* Nunca reemplazar la IA con el sistema
+* Debe funcionar en partidas nuevas, partidas importadas y partidas actualmente existentes en juego sin excepciones
+
+⸻
+
+PROBLEMA CRÍTICO A SOLUCIONAR
+
+Actualmente, cuando se agota el límite de una IA (ej: Anthropic), al cambiar manualmente a otra IA (ej: Gemini), el sistema sigue comportándose como si el límite estuviera agotado y no responde correctamente.
+
+SOLUCIÓN OBLIGATORIA:
+
+* Detectar correctamente qué proveedor de IA está activo en cada solicitud
+* Asegurar que cada llamada use exclusivamente la API correspondiente al modelo seleccionado
+* Separar completamente el estado de uso/cuota entre proveedores (Anthropic, Gemini, etc.)
+* Evitar que errores de cuota de un proveedor afecten a otro
+* Implementar fallback real: si una IA falla por límite, permitir usar otra inmediatamente sin bloqueo
+
+⸻
+
+SISTEMA DE MONITOREO DE TOKENS (NUEVO - CRÍTICO)
+
+Implementar un sistema visible y funcional de seguimiento de uso de tokens por IA.
+
+1. CONTADOR POR NARRACIÓN (EN PARTIDA)
+
+* Mostrar después de cada respuesta:
+    * tokens usados
+    * IA utilizada
+* Datos reales desde API
+
+2. CONTADOR EN EDITOR (DENTRO DE PARTIDA)
+
+* acumulado por sesión:
+    * tokens por IA
+    * llamadas realizadas
+* actualización en tiempo real
+
+3. CONTADOR GLOBAL (MENÚ / CONFIGURACIÓN)
+
+* por IA:
+    * consumo total
+    * límite
+    * restante
+    * reinicio del proveedor si aplica
+
+4. DETECCIÓN AUTOMÁTICA
+
+* usar metadata de API (usage / headers)
+* si no existe:
+    → estimación coherente basada en historial real
+
+5. OBJETIVO
+
+* transparencia total del consumo
+* control del uso por IA
+* optimización del gasto
+
+⸻
+
+OPTIMIZACIÓN DE CONSUMO (SIN CAMBIAR SISTEMA)
+
+* reducir llamadas por turno
+* enviar solo últimos 1–2 turnos + Resumen IA
+* eliminar redundancia de contexto
+* no reexplicar información ya conocida
+* usar modelos ligeros para sistema
+* usar modelos fuertes solo para narración
+
+⸻
+
+SISTEMA NARRATIVO — REGLA CENTRAL
+
+La IA DEBE generar narración SIEMPRE.
+
+NO existe turno sin narración.
+
+El sistema nunca sustituye la narración.
+
+⸻
+
+🔄 SISTEMA HÍBRIDO DE NARRACIÓN (REFORZADO Y CORREGIDO)
+
+PRINCIPIO CENTRAL
+
+El sistema híbrido es una arquitectura de dos capas activas:
+
+* Capa del sistema (estructura del mundo)
+* Capa de la IA (narración final)
+
+La narración visible SIEMPRE es responsabilidad de la IA.
+
+⸻
+
+1. CAPA DEL SISTEMA (ESTRUCTURA VIVA)
+
+El sistema genera y mantiene:
+
+* ubicación
+* clima
+* tiempo
+* estado físico del personaje
+* estado estructural del mundo
+* cambios objetivos persistentes
+
+IMPORTANTE:
+
+* esto NO es narración
+* esto NO se muestra directamente como texto narrativo
+* esto es solo estado base del mundo
+
+⸻
+
+2. CAPA DE IA (NARRADOR PRINCIPAL)
+
+La IA:
+
+* convierte el estado del sistema en narrativa viva
+* añade emoción, tensión y profundidad
+* interpreta el mundo dinámicamente
+* decide qué es relevante narrar
+* puede ignorar o reinterpretar datos del sistema si no aportan valor
+
+La IA es el único narrador visible al jugador.
+
+⸻
+
+3. COLABORACIÓN REAL (NO RÍGIDA)
+
+* Sistema → estructura base del mundo
+* IA → narrativa final completa
+
+PERO:
+
+* la IA no depende completamente del sistema
+* la IA puede completar información faltante
+* la IA puede simplificar o expandir según contexto
+* la IA puede priorizar memoria narrativa interna sobre datos del sistema
+
+⸻
+
+4. DECISIÓN DINÁMICA
+
+No existe regla fija.
+
+La IA decide en cada turno:
+
+* uso alto del sistema → escenas rutinarias
+* uso parcial → escenas normales
+* ignorar sistema → escenas críticas o narrativas complejas
+
+⸻
+
+5. REGLA ABSOLUTA
+
+* el sistema nunca narra solo
+* la IA nunca desaparece
+* la narración final siempre pertenece a la IA
+
+⸻
+
+🧠 IA CON MEMORIA NARRATIVA INTERNA (CRÍTICO)
+
+La IA aprende de su propia narración.
+
+Esto significa:
+
+* todo lo narrado se convierte en estado implícito del mundo
+* no debe reconstruir desde cero lo ya establecido
+* no debe re-describir información ya consolidada
+* la narración previa actúa como memoria comprimida viva
+
+NO es solo evitar repetición:
+→ es evitar regeneración completa del mundo ya narrado
+
+⸻
+
+🧾 MEMORIA IA (OBLIGATORIA Y CORREGIDA)
+
+1. HISTORIA (ARCHIVO COMPLETO)
+
+* La IA SIEMPRE añade automáticamente cada turno aquí
+* Funciona como registro total del mundo narrado
+* NO se usa en cada turno
+* NO se carga como contexto activo continuo
+
+USO INTELIGENTE OBLIGATORIO:
+
+Se consulta SOLO cuando:
+
+* se pierde coherencia narrativa
+* hay contradicciones
+* falta contexto real
+* el Resumen IA no es suficiente
+* se requiere reconstrucción del mundo
+
+IMPORTANTE:
+
+* es archivo histórico
+* no es memoria activa
+* no afecta directamente la narración diaria
+
+⸻
+
+2. RESUMEN IA (CONTEXTO ACTIVO REAJUSTADO)
+
+El Resumen IA es el único contexto activo frecuente.
+
+Debe contener SOLO:
+
+* estado actual del personaje
+* tiempo actual
+* relaciones relevantes
+* situación actual
+* objetivo activo
+* información crítica reciente
+
+⸻
+
+REGLA DE REAJUSTE
+
+El Resumen IA:
+
+* NO es narrativa
+* NO es historia comprimida
+* NO duplica Historia
+* NO contiene texto innecesario
+
+Debe ser:
+
+* mínimo
+* estructurado
+* funcional
+* optimizado para decisiones inmediatas
+
+⸻
+
+ACTUALIZACIÓN DEL RESUMEN IA
+
+* NO se actualiza cada turno
+* SOLO cuando:
+    * cambios importantes ocurren
+    * aparecen nuevos personajes
+    * cambian relaciones
+    * ocurre un evento relevante
+    * cambia el objetivo del jugador
+
+⸻
+
+CONTINUIDAD DEL ENTORNO
+
+* no repetir descripciones sin cambios
+* narrar solo cambios reales
+* asumir persistencia del mundo narrado
+* respetar memoria narrativa implícita
+
+⸻
+
+OBSERVACIÓN DEL JUGADOR
+
+Si el jugador usa “Observar”:
+
+* descripción completa coherente
+* basada en estado actual + memoria narrativa implícita
+* puede incluir información emergente
+
+⸻
+
+VIAJES Y TRANSICIONES
+
+* no saltar automáticamente
+* no resumir por defecto
+
+Debe:
+
+* narrar trayecto dinámico
+* permitir interacción
+* mantener inmersión total
+
+⸻
+
+EVENTOS Y DECISIÓN
+
+* acción simple → narración breve
+* relevante → narración media
+* importante → narración completa
+
+⸻
+
+DIÁLOGOS
+
+* siempre mantener diálogos relevantes
+* no eliminarlos
+* integrarlos con narrativa sin pérdida de contexto
+
+⸻
+
+REDUCCIÓN DE REDUNDANCIA
+
+La IA NO debe:
+
+* repetir información ya consolidada
+* reexplicar historia previa
+* reconstruir contexto ya existente
+
+La IA SÍ debe:
+
+* asumir continuidad total del mundo
+* narrar únicamente lo nuevo o cambiante
+
+⸻
+
+MULTI-PROVEEDOR
+
+* cada IA es independiente
+* sin compartir errores ni cuotas
+* fallback inmediato entre modelos
+* cambio de proveedor sin bloqueo de estado
+
+⸻
+
+RESULTADO FINAL
+
+* narración siempre activa
+* sistema híbrido real (estructura + IA narrativa)
+* memoria narrativa implícita en IA
+* historia siempre registrada automáticamente
+* resumen IA optimizado como contexto activo real
+* compatibilidad total con partidas nuevas, importadas y existentes en juego
+* reducción real de tokens sin pérdida de inmersión
+* coherencia total del mundo persistente
+* sistema estable, escalable y continuo en sesiones largas

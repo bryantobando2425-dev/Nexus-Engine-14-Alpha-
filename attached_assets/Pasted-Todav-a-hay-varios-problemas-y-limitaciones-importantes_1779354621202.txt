@@ -1,0 +1,81 @@
+Todavía hay varios problemas y limitaciones importantes en el sistema de secciones personalizadas que no quedaron resueltos correctamente.
+
+1. La función “Sugerir” sigue sin funcionar correctamente:
+El problema no es el mensaje de error ni el estado visual del botón. El problema es que la función realmente no está funcionando como debería.
+
+La opción “Sugerir” debe estar disponible permanentemente durante todo el flujo de creación y edición de secciones personalizadas.
+
+Actualmente, el comportamiento es confuso e inconsistente:
+- Primero se crea una sección personalizada
+- Luego se crea un campo dentro de esa sección
+- Después, únicamente al editar ese campo, aparece la opción “Sugerir”
+
+Eso no debería funcionar así.
+
+La opción “Sugerir” debería:
+- existir desde el inicio de la creación de la sección personalizada
+- permanecer visible al crear campos
+- seguir disponible al editar campos
+- existir durante toda la administración de la sección
+- funcionar correctamente en cualquier etapa
+- realmente generar y añadir contenido útil mediante IA
+
+No debe desaparecer dependiendo del estado de edición ni quedar limitada únicamente a ciertos momentos del flujo.
+
+2. Sigue siendo muy limitado editar secciones personalizadas:
+Actualmente todavía existen demasiadas limitaciones para modificar estructuras ya creadas.
+
+Por ejemplo:
+- editar el nombre completo de una sección
+- reorganizar campos
+- modificar configuraciones internas
+- actualizar propiedades generales
+- cambiar estructuras sin eliminar contenido
+- administrar grandes cantidades de campos de forma cómoda
+
+En muchos casos sigue siendo más fácil eliminar la sección completa que modificarla correctamente, y eso no debería ocurrir.
+
+3. No se pueden cambiar correctamente los tipos de campo:
+Actualmente, si un campo fue creado como:
+- text
+- number
+- list
+- state
+- progress
+- date
+- tags
+
+no existe una forma cómoda y funcional de convertirlo posteriormente a otro tipo distinto.
+
+El sistema necesita permitir:
+- cambiar tipos libremente
+- migrar datos entre formatos
+- adaptar automáticamente la representación visual
+- mantener la información existente cuando sea posible
+- editar la estructura sin destruir contenido
+
+4. Todavía faltan herramientas, formatos y estructuras avanzadas:
+Las mejoras actuales añadieron algunos formatos básicos, pero todavía falta gran parte de lo solicitado.
+
+Lo añadido actualmente se centra principalmente en renderizado visual básico, pero el sistema aún necesita herramientas mucho más avanzadas y flexibles.
+
+Todavía faltan:
+- más formatos visuales
+- estructuras complejas
+- sistemas de organización avanzados
+- tablas reales
+- paneles
+- bloques expandibles
+- separadores visuales avanzados
+- columnas
+- estilos reutilizables
+- sistemas globales de colores
+- formatos aplicables a múltiples elementos
+- mejores herramientas de edición
+- administración visual más clara
+- componentes dinámicos reutilizables
+- mayor flexibilidad estructural
+
+Actualmente los colores y estilos siguen estando demasiado ligados a componentes específicos en lugar de existir como herramientas generales reutilizables dentro del sistema.
+
+El objetivo no es solo mejorar la apariencia visual, sino convertir las secciones personalizadas en un sistema realmente avanzado, flexible, persistente y cómodo de utilizar para narrativa, organización y worldbuilding.

@@ -1,0 +1,256 @@
+ENGINE — Prompt de Correcciones v5.0 (Estable, Compatible y Completo)
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+⸻
+REGLA CRÍTICA DE COMPATIBILIDAD (NUEVA — OBLIGATORIA)
+
+NO modificar, reemplazar ni romper el sistema actual de aplicación de estado si ya funciona.
+
+Todo cambio debe:
+
+* Extender el sistema actual
+* Mantener compatibilidad total con el flujo existente
+* No cambiar formatos de datos ya funcionales
+* No alterar cómo el frontend recibe y aplica datos si actualmente funciona
+
+Si una mejora entra en conflicto con el sistema actual:
+👉 Se debe adaptar la mejora al sistema existente, NO al revés
+
+⸻
+
+PROBLEMA 1 — FICHAS QUE NO SE ACTUALIZAN CON EL TIEMPO NARRATIVO
+
+La IA actualmente solo agrega información nueva encima de lo existente pero nunca reescribe, modifica, corrige ni elimina los campos que han cambiado. Esta es la causa de fichas permanentemente incoherentes con la historia real.
+
+Regla fundamental permanente: en cada turno, la IA reescribe, modifica, añade, corrige y elimina activamente TODOS los campos del juego sin excepción. No agregar encima. Reescribir completamente. Sin excepciones. En todos los turnos. Para siempre. Esta regla se aplica también a cualquier sección o campo que se añada en el futuro.
+
+Esto incluye absolutamente TODO: personaje, NPCs, facciones, mundo, inventario, relaciones, consecuencias, legado, lugares, fecha actual (día/mes/año), tiempo narrativo y cualquier otro elemento del sistema. También aplica obligatoriamente a todas las acciones del juego, incluyendo “Avanzar etapa”.
+
+La actualización de cada campo debe ser coherente y consistente con todo lo siguiente simultáneamente: la narración activa, la Memoria IA disponible, todas las fichas existentes (personaje, NPCs, facciones, lugares, mundo), el historial completo de la partida, y cualquier otro elemento del sistema. Todo debe ser coherente con todo. Ningún campo puede contradecir otro.
+
+En cada turno la IA recalcula y reescribe obligatoriamente todos los campos afectados:
+
+Para el personaje jugador: edad calculada desde su fecha de nacimiento y el año narrativo actual, fecha exacta actualizada (día/mes/año), descripción física coherente con esa edad exacta, atributos vitales, descriptores, habilidades con su nivel de dominio actual, estado de salud, clima emocional, deseos y miedos según lo vivido.
+
+Para cada NPC individualmente: edad calculada desde su fecha de nacimiento y el año narrativo actual, fecha actual coherente, descripción física acorde a esa edad real, estado vital, última ubicación conocida, estado de la relación con el jugador, condiciones de salud conocidas, y todos los demás campos de su ficha. Cada NPC se recalcula individualmente en cada turno, siempre, sin excepción.
+
+Para el mundo: estado político, económico, eventos activos o resueltos, estado de facciones, y cualquier otro sistema global.
+
+Cuando la narración cubre un salto temporal de cualquier magnitud, la IA calcula el tiempo exacto transcurrido y propaga ese cambio a absolutamente todas las fichas y sistemas, incluyendo la fecha visible en la interfaz (top bar y reloj). Ningún campo dependiente del tiempo puede quedar con un valor de una fecha anterior a la narrativa actual. La fecha del juego debe avanzar correctamente tanto en el estado interno como visualmente en todos los elementos de la interfaz.
+
+Las opciones que la IA propone al jugador deben ser siempre coherentes con el tiempo narrativo actual. Nunca puede proponer avanzar a un año que ya ha pasado ni ofrecer acciones que contradicen el estado actual de la partida.
+
+Nunca puede quedar un campo sin actualizar si depende del paso del tiempo, de la narrativa, de la Memoria IA o de cualquier otro elemento del sistema. No es opcional. Es obligatorio siempre.
+
+Importante: actualmente la fecha de la historia en la narración NO se está actualizando correctamente. Esto debe corregirse obligatoriamente: la fecha narrativa (día/mes/año) debe actualizarse siempre en cada turno, en cada avance temporal y en cada acción del sistema, tanto a nivel interno como visual. No puede quedarse estática bajo ninguna circunstancia.
+
+⸻
+
+➕ AÑADIR: Sincronización obligatoria TOTAL con la narración
+
+TODO el sistema debe sincronizarse con la narración sin excepción, incluyendo:
+
+* Todas las secciones
+* Todas las subsecciones
+* Todas las fichas
+* Todos los campos
+* Todos los sistemas
+* Todos los elementos actuales y futuros
+
+Esto incluye explícitamente (pero no se limita a):
+
+* Personaje → absolutamente todos sus campos
+* Personas (NPCs) → absolutamente todos los campos de cada NPC
+* Mundo → todos sus sistemas
+* Inventario, relaciones, atributos, habilidades, psicología, legado, consecuencias
+* Mapa, lugares, eventos, tiempo narrativo
+* Cualquier sección personalizada
+* Cualquier sistema añadido en el futuro
+
+Nada puede quedar fuera de sincronización con la narración.
+
+⸻
+
+PROBLEMA 2 — PANEL “ACTUALIZAR ESTADO” INCOMPLETO E INCORRECTO
+
+El panel existe visualmente pero no cumple su función real. Reparar y completar el sistema:
+
+Actualización General: llama a la IA con TODO el estado completo del juego sin excepción — TODAS las secciones, TODA la narrativa acumulada, TODA la memoria IA disponible, TODAS las fichas, TODAS las subsecciones, y cualquier elemento existente o futuro — y le obliga a reescribir, modificar, añadir, corregir y eliminar activamente TODOS los campos del sistema exactamente igual que en un turno narrativo. Esto incluye obligatoriamente la fecha (día/mes/año) tanto en el estado interno como en la interfaz visual (top bar y reloj), el personaje, los NPCs, el mundo, el mapa y absolutamente todo.
+
+Las casillas de verificación en “Por secciones” deben incluir TODAS las secciones existentes sin excepción: Personaje, NPCs, Facciones, Mundo, Inventario, Descriptores, Atributos, Habilidades, Psicología, Relaciones, Consecuencias, Legado, Mapa, Fecha/Tiempo narrativo, y cualquier sección personalizada que el jugador haya creado.
+
+El campo de instrucciones manuales debe funcionar de forma completamente independiente. El jugador puede escribir instrucciones en lenguaje natural y pulsar ejecutar sin necesidad de seleccionar ninguna sección. La IA aplica exactamente lo indicado de forma obligatoria, coherente y verificable. No puede ignorar instrucciones. No puede aplicar parcialmente. No puede afirmar que aplicó cambios si no los aplicó realmente. Si el jugador indica que algo está mal y especifica qué debe cambiarse, la IA está obligada a ejecutar esa corrección sin excepción.
+
+La IA no puede asumir que “todo está bien”. Debe analizar el estado completo, detectar incoherencias reales y corregirlas. No puede devolver falsos positivos.
+
+Muestra indicador de progreso real. Al terminar muestra un resumen de qué cambió exactamente. Si falla, reintenta automáticamente al menos 3 veces antes de mostrar error.
+
+⸻
+
+➕ AÑADIR: Ejecución obligatoria real del sistema
+
+El panel SIEMPRE debe ejecutar cambios reales en el estado completo del sistema.
+Nunca puede limitarse a evaluar o validar sin aplicar cambios.
+
+⸻
+
+➕ AÑADIR: Sincronización TOTAL con la narración desde el panel
+
+El panel debe aplicar exactamente las mismas reglas del sistema narrativo, sin excepción:
+
+* Debe actualizar correctamente la fecha narrativa (día/mes/año)
+* Debe reflejar esa fecha en TODAS las vistas (top bar, mundo, etc.)
+* Debe recalcular cualquier elemento dependiente del tiempo
+* Debe sincronizar absolutamente TODO el sistema
+
+Esto incluye:
+
+* Personaje → todos sus campos
+* Personas (NPCs) → todos los NPCs y todos sus campos
+* Mundo → todos sus sistemas
+* Mapa, eventos, relaciones, atributos, etc.
+* Todas las secciones personalizadas
+* Cualquier sistema actual o futuro
+
+⸻
+
+➕ AÑADIR: Instrucciones manuales con obediencia absoluta
+
+Cuando el usuario escriba instrucciones:
+
+👉 SIEMPRE deben ejecutarse exactamente como fueron indicadas
+
+SIN:
+
+* Validar
+* Ignorar
+* Contradecir
+* Modificar la intención
+
+Incluso si son incoherentes.
+
+⸻
+
+🚫 PROHIBIDO:
+
+* Decir “todo está bien” sin análisis real
+* No actualizar la fecha cuando es necesario
+* Ignorar la narración
+* Ignorar instrucciones manuales
+* No aplicar cambios reales
+
+⸻
+
+PROBLEMA 5 — CREACIÓN DINÁMICA DE SECCIONES Y CAMPOS INCOMPLETA
+
+La creación de secciones personalizadas actualmente solo existe en la pestaña Notas+ del personaje. Debe existir en absolutamente todos los paneles y fichas del sistema sin excepción: personaje (todas las pestañas), NPCs, facciones, mundo, mapa, y cualquier otro panel existente o futuro. También debe poder crearse desde la pantalla principal de narración.
+
+La interfaz de creación debe ser completa y rica, con al menos: nombre de la sección, tipo de contenido, campos personalizados con tipos variados (texto, número, lista, estado, barra de progreso, fecha, etiquetas), icono seleccionable, y opción de que la IA la gestione automáticamente.
+
+La IA debe leer, actualizar, modificar, añadir y eliminar el contenido de todas las secciones personalizadas exactamente igual que con las secciones nativas, en cada turno, sin excepción. Las secciones personalizadas son parte permanente del sistema y se tratan exactamente igual que cualquier sección nativa en todos los sistemas.
+
+⸻
+
+➕ AÑADIR: Sincronización total con narración
+
+Las secciones personalizadas también deben:
+
+* Actualizarse con el tiempo narrativo
+* Mantener coherencia con el sistema
+* Integrarse completamente con la IA
+
+⸻
+
+➕ AÑADIR: Generación contextual por sección (IMPORTANTE)
+
+Cuando el usuario cree o sugiera nuevas secciones o campos:
+
+👉 El sistema debe proponer opciones coherentes con el contexto específico de la sección donde se está creando.
+
+Ejemplos:
+
+* En Personaje → sugerencias acordes a evolución narrativa, estados físicos/emocionales, rasgos únicos, progresión del personaje
+* En Personas (NPCs) → sugerencias acordes a rol narrativo, historia personal, secretos, evolución de relación, participación en eventos
+* En Mundo → eventos dinámicos, cambios sociales, conflictos, evolución histórica
+* En Mapa → nuevas zonas, puntos de interés, cambios geográficos, rutas narrativas
+* En cualquier sección personalizada → sugerencias coherentes con su propósito específico
+
+Las sugerencias NO deben repetir sistemas ya existentes (atributos, habilidades, psicología, relaciones, política, economía, etc.).
+Deben complementar el sistema, no duplicarlo.
+
+Las sugerencias NO deben ser genéricas ni repetidas entre secciones.
+Deben adaptarse al contexto específico de cada panel.
+
+Esto aplica a TODO el sistema, incluyendo futuras secciones.
+
+⸻
+
+REGLA GLOBAL PERMANENTE
+
+Todo lo descrito en este mensaje son comportamientos permanentes del sistema, no correcciones puntuales. Se aplica en cada turno, siempre, para todas las secciones existentes y futuras, independientemente de la era, época o tipo de partida.
+
+⸻
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+⸻
+
+EXPORTAR E IMPORTAR PARTIDA — SISTEMA COMPLETO (YA IMPLEMENTADO)
+
+El sistema de exportar e importar partida ya funciona correctamente. No modificar su funcionamiento actual. Solo se permiten mejoras o añadidos sin romper lo existente.
+
+⸻
+
+ORDEN DE PRIORIDAD (APLICACIÓN GLOBAL DEL SISTEMA)
+
+La implementación debe seguir este orden de prioridad de forma estricta, pero entendiendo que cada punto afecta a TODO el sistema completo:
+
+1. Sistema de actualización completo — fecha, estado interno y visual, coherencia de opciones
+2. Panel “Actualizar Estado” — ejecución real, instrucciones manuales, sincronización total
+3. NPCs sin “???” internos — datos reales siempre
+4. Edición manual en todo el sistema sin excepción
+5. Creación dinámica de secciones en todos los paneles con integración completa
+
+⚠️ IMPORTANTE:
+
+Cada punto NO es aislado.
+Cada uno debe aplicarse sobre:
+
+* Todas las secciones
+* Todos los sistemas
+* Todos los campos
+* Todo el estado global
+
+No se permite implementar un punto solo en una parte del sistema.
+
+⸻
+
+INSTRUCCIÓN DE IMPLEMENTACIÓN (AJUSTADA — COHERENCIA GLOBAL)
+
+La implementación debe seguir el orden de prioridad, pero manteniendo coherencia global del sistema en todo momento.
+
+No se permite implementar cambios aislados que rompan otras partes del sistema.
+
+Cada mejora debe integrarse inmediatamente con todo el sistema completo.
+
+Si un cambio afecta a otros sistemas, estos deben ajustarse en el mismo proceso.
+
+Se permite avanzar progresivamente, pero:
+
+* No dejar sistemas desincronizados
+* No romper funcionalidades existentes
+* No dejar implementaciones a medias
+
+Si los recursos se agotan:
+
+* El sistema debe quedar estable
+* Nunca parcialmente roto
+
+Al finalizar:
+
+* Reporte completo
+* Qué se implementó
+* Qué se ajustó indirectamente
+* Qué quedó pendiente

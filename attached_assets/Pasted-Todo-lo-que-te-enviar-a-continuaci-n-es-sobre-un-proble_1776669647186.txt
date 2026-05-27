@@ -1,0 +1,90 @@
+Todo lo que te enviaré a continuación es sobre un problema que tuvimos antes pero desde otra cuenta antes que trajera mi proyecto aquí desde GitHub.
+
+El problema inicial:
+**El límite gratuito mensual de la IA de Replit está agotado.** Usaste $2.06 sobre un límite de $2.00. El contador se reinicia automáticamente el **1 de mayo de 2026**.
+
+Mejoré el mensaje para que la app te lo explique claramente en vez de mostrar el error genérico "El narrador no pudo responder". Ahora verás: _"⚠ Límite mensual de IA agotado. El límite gratuito se renueva el 1 de mayo..."_
+
+Sobre el prompt que compartiste: la arquitectura que describes (llamadas separadas para narración y estado, historial limitado, memoria resumida, nunca enviar historia completa) **ya está implementada** exactamente así. No hay nada más que cambiar en ese documento — el sistema ya sigue esas reglas.
+
+Tu respuesta y lo que hiciste para el problema (verifica que estén implementado):
+La causa es inmediata y clara — no es un bug de código. Los logs dicen exactamente esto:
+
+**`FREE_TIER_BUDGET_EXCEEDED`** — El presupuesto mensual gratuito de la integración de Anthropic está agotado. Ya usaste los 2,000,000 de micro-dólares del tier gratuito. El contador se reinicia el **1 de mayo de 2026**.
+
+Ahora voy a mejorar el mensaje de error para que la app te lo diga claramente en vez de mostrar el mensaje genérico de "El narrador no pudo responder":
+
+Voy a mejorar el manejo de errores en backend y frontend simultáneamente:
+
+Ahora actualizo el frontend para mostrar un mensaje claro cuando se detecta el error de presupuesto:
+
+Ahora actualizo `api.ts` para detectar el error específico de presupuesto y propagar el mensaje:
+
+Ahora actualizo el catch de `Game.tsx` para mostrar el mensaje correcto:
+
+También hay que corregir el primer turno de narración:
+
+También el recovery retry:
+
+La causa es **100% clara** y no tiene nada que ver con el código. Los logs muestran esto textualmente:
+
+`   FREE_TIER_BUDGET_EXCEEDED — Free tier monthly spend limit exceeded.  x-ratelimit-used: 2,059,678 / 2,000,000 micro-dólares  x-ratelimit-reset: 1 de mayo de 2026   `
+
+**El límite gratuito mensual de la IA de Replit está agotado.** Usaste $2.06 sobre un límite de $2.00. El contador se reinicia automáticamente el **1 de mayo de 2026**.
+
+Mejoré el mensaje para que la app te lo explique claramente en vez de mostrar el error genérico "El narrador no pudo responder". Ahora verás: _"⚠ Límite mensual de IA agotado. El límite gratuito se renueva el 1 de mayo..."_
+
+Sobre el prompt que compartiste: la arquitectura que describes (llamadas separadas para narración y estado, historial limitado, memoria resumida, nunca enviar historia completa) **ya está implementada** exactamente así. No hay nada más que cambiar en ese documento — el sistema ya sigue esas reglas.
+
+**Para continuar usando el juego ahora mismo tienes dos opciones:**
+
+1. Actualizar tu plan en replit.com (Hacker o superior incluyen más presupuesto de IA)
+2. Esperar al 1 de mayo cuando el límite se renueva gratis
+
+
+Tu otra respuesta al problema y lo que hiciste:
+Tiene toda la razón en frustración. El problema técnico real es que usas `claude-sonnet` para TODO — narración Y actualización de estado — y el estado genera JSONs enormes. Eso quema tokens muy rápido. La solución correcta: usar **Haiku** (modelo barato ~20x más barato que Sonnet) para la actualización de estado, y reducir el tamaño de los JSONs. Esto es exactamente lo que hacen plataformas como AI Realm. Voy a implementarlo ahora.
+
+Sobre Gemini: sí, también funciona y tiene una cuota gratuita más generosa, pero requiere configurar una integración nueva. El cambio a Haiku lo puedo hacer ahora mismo sin tocar nada más.
+
+Cambio de modelo ahora: Haiku para estado (JSON puro, no necesita creatividad), Sonnet solo para narración. Y reduzco tokens al mínimo necesario:
+
+Ahora reemplazo el modelo en todas las llamadas de actualización de estado:
+
+Ahora cambio el modelo y los tokens en los puntos correctos. Primero leo el contexto exacto de cada llamada:
+
+Ahora hago todos los cambios de modelo y tokens de una vez:
+
+Ahora actualizo el resto de rutas: dream, state-update manual, suggest, summarize-run, memory-update:
+
+Ahora reinicio el servidor con todos los cambios:
+
+Verifico que solo quedaron 2 llamadas con el modelo Sonnet (la narración):
+
+Perfecto. Sonnet solo en las 2 llamadas de narración, Haiku en todo lo demás. Reviso que el servidor arrancó bien:
+
+Servidor corriendo. Aquí está el resumen completo de lo que hice y qué esperar:
+
+---
+
+**Lo que hice ahora mismo — reducción de coste ~75%:**
+
+|Llamada|Antes|Ahora|
+|---|---|---|
+|Narración (texto literario)|Sonnet (~$0.15/1K tokens)|Sonnet — se mantiene (necesita calidad)|
+|Actualización de estado|Sonnet + 8192 tokens|**Haiku + 5120 tokens** (20x más barato)|
+|Sueños, memoria, sugerencias|Sonnet|**Haiku**(innecesario usar Sonnet aquí)|
+|Tokens de narración|4096|**2048** (suficiente para varios párrafos)|
+
+Esto significa que lo que antes te costaba ~$0.09 por turno ahora cuesta ~$0.02–0.03. En vez de 22 turnos por el límite gratuito mensual, obtendrás unas **70–90 narraciones** con el mismo presupuesto gratuito.
+
+---
+
+**Sobre Gemini:** Sí, funciona y tiene una cuota gratuita enorme (~1,500 llamadas/día gratis). Si quieres, puedo integrarlo como alternativa — en ese caso el juego usaría Gemini y no gastaría nada de tu cuota de Anthropic. Dime si quieres que lo haga.
+
+**Ahora mismo** el límite ya está agotado hasta el 1 de mayo. Las optimizaciones entran en vigor cuando se renueve. Si quieres seguir jugando hoy, las opciones son: actualizar plan en Replit, o que integre Gemini (gratuito y generoso).
+
+---
+
+LO QUE DEBES HACERME (lee todo):
+Quiero que hagas la integración de Gemini pero NO COMO ALTERNATIVA EN EL QUE DEBAS ELIMINAR Anthropic, NO, deben estar las dos, ambas estarán!!. Cada una debe estar integrada de forma individual, NO comparten los gastos de tokens ni nada de eso, así al usar y cambiarme a otra pueda seguir con mi partida u otra (como yo quiera). Para poder cambiar de IA entre partidas deberías colocarlas en Configuración (desde el menú principal fuera de una partida) en la parte que dice "Estado de APIs", y también desde una partida en la sección de Editor (en cualquier lado de ahí, decide tú), con las opciones para elegir cualquiera de las dos cuando yo quiera, siempre están disponibles. Respóndeme en Español, otra cosa, si crees que puedo incluso añadir otras (aparte de Gemini y Anthropic) entonces házmelo saber.

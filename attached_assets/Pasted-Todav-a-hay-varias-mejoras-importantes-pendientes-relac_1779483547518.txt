@@ -1,0 +1,173 @@
+Todavía hay varias mejoras importantes pendientes relacionadas con el sistema de secciones personalizadas, edición avanzada y gestión del mundo.
+
+⸻
+
+1. Problema de persistencia y reutilización de secciones personalizadas:
+    Es necesario permitir que las secciones personalizadas puedan guardarse como plantillas reutilizables entre distintas partidas, no solo dentro de una misma partida.
+
+Estas plantillas deben poder:
+
+* Guardarse como estructuras globales independientes de cualquier partida
+* Reutilizarse en nuevas partidas sin reconstrucción manual
+* Mantener estructura completa (campos, tipos, configuración, valores base y formato)
+* Clonarse sin romper compatibilidad interna
+* Servir como base para sistemas complejos dentro de secciones personalizadas (NPCs, facciones, misiones, inventario, economía, etc.)
+* Permitir edición de la plantilla sin afectar instancias ya usadas en partidas existentes
+
+Actualmente no existe un sistema real de plantillas globales reutilizables.
+
+⸻
+
+2. Lógica REAL y comportamiento avanzado de tipos de campos (REFINAMIENTO):
+    Los tipos actuales ya funcionan a nivel visual y parcial, pero deben evolucionar hacia un sistema más coherente, usable y con impacto narrativo real dentro de secciones personalizadas.
+
+Tipos:
+text, number, list, state, progress, date, header, table, column
+
+Mejoras requeridas:
+
+text:
+
+* Debe permitir escritura real con saltos de línea naturales dentro de los campos de secciones personalizadas
+* Los saltos de línea deben ser visibles y respetarse siempre en edición y visualización de los campos de secciones personalizadas
+* Debe comportarse como un editor real (tipo Notion/Obsidian/ChatGPT), no como texto plano sin estructura
+* Debe mantener formato al guardar (sin perder párrafos ni compactar todo en una sola línea)
+* Debe mejorar la legibilidad en campos largos narrativos
+
+number:
+
+* Valor cuantitativo real dentro de secciones personalizadas
+* Usable por la IA como dato dinámico
+* Capacidad de evolución con eventos narrativos
+
+list:
+
+* Mejor estructura interna (más legible y editable)
+* Separación clara de elementos dentro del campo
+* Integración más coherente con IA
+
+state:
+
+* Estados persistentes y coherentes dentro del sistema de secciones personalizadas
+* Impacto real en lógica narrativa
+
+progress:
+
+* Progreso dinámico y coherente dentro de secciones personalizadas
+* Actualización contextual según eventos narrativos
+
+date:
+
+* Integración con cronología narrativa dentro de secciones personalizadas
+* Coherencia temporal entre registros
+
+header:
+
+* Uso como separador estructural visual dentro de secciones personalizadas
+* Organización clara de bloques sin almacenar datos
+
+table:
+column:
+
+* Mantener su idea base pero mejorar su flexibilidad, legibilidad y escalabilidad
+* Evitar rigidez en sintaxis
+* Permitir estructuras más naturales y extensibles dentro de secciones personalizadas
+* Mejorar la edición y visualización sin depender de formatos limitados
+* Permitir múltiples entradas y estructuras complejas sin límites artificiales
+* Hacer la sintaxis más natural y menos restrictiva manteniendo compatibilidad con el sistema actual
+
+⸻
+
+3. Edición administrativa y usabilidad en SECCIONES PERSONALIZADAS:
+    La edición dentro de secciones personalizadas sigue siendo limitada e incómoda.
+
+Debe permitir:
+
+* Edición completa de secciones sin necesidad de eliminarlas
+* Eliminación de campos siempre visible y accesible directamente en cada campo
+* Reorganización de campos precisa, estable y usable (especialmente en móvil)
+* Acceso constante a herramientas de edición en cada campo y sección
+* Cambio de tipo de campo sin pérdida de información
+* Migración automática de datos entre tipos sin corrupción
+
+Actualmente muchas acciones siguen siendo destructivas o poco accesibles.
+
+⸻
+
+4. Problema de edición y controles invisibles en SECCIONES PERSONALIZADAS:
+    Actualmente existe un problema crítico de accesibilidad en la edición dentro de secciones personalizadas.
+
+Los controles de acción (como eliminar, mover y otras opciones de edición de campos y secciones) no siempre son visibles o accesibles de forma clara, especialmente en dispositivos móviles.
+
+Problemas específicos:
+
+* El botón de eliminar campos no está siempre visible y obliga a interactuar “a ciegas”
+* Las opciones para mover campos o reordenarlos no están claramente visibles o accesibles en todo momento
+* Algunas acciones de edición solo aparecen bajo condiciones específicas o con interacciones poco intuitivas
+* En móvil, estos controles pueden quedar ocultos por tamaño o distribución de interfaz
+
+REQUISITO:
+
+* TODOS los controles de edición deben estar siempre visibles y accesibles en los campos de secciones personalizadas
+* Eliminar, mover y editar deben ser acciones explícitas y permanentes en cada campo de sección personalizada
+* No debe existir ninguna acción crítica que requiera “adivinar” o interactuar sin visibilidad directa
+* La interfaz debe priorizar claridad absoluta sobre compactación visual
+
+⸻
+
+5. Auto-creación de sistemas del mundo usando SECCIONES PERSONALIZADAS + SISTEMA NARRATIVO:
+    La IA debe ser capaz de crear sistemas completos del mundo utilizando secciones personalizadas como herramienta estructural, pero no limitándose exclusivamente a ellas.
+
+Esto incluye:
+
+* Creación automática de nuevas secciones personalizadas cuando sea necesario
+* Uso de secciones personalizadas como base estructural cuando corresponda
+* Uso adicional de sistemas nativos del juego (NPCs, facciones, mundo, eventos, etc.) cuando sea más apropiado
+* Capacidad de combinar ambos sistemas (personalizado + nativo) según necesidad narrativa
+
+IMPORTANTE DE CLARIDAD:
+
+* Las estructuras creadas dentro de secciones personalizadas pertenecen al sistema de secciones personalizadas
+* Las estructuras creadas en sistemas nativos pertenecen al sistema nativo del juego
+* Ambos sistemas pueden coexistir, pero deben mantenerse conceptualmente separados para evitar confusión
+
+COMPORTAMIENTO DE LA IA:
+
+* Las secciones creadas por la IA se pueden editar como en las secciones personalizadas, es decir, deben poder editarse, pero no exactamente con el mismo editor ni exactamente con las mismas herramientas, ya que al ser creadas por la IA y al usar herramientas tanto del sistema de secciones personalizadas como del sistema nativo, deben tener una interfaz de edición diferenciada
+* Cuando la IA cree una estructura nueva, debe marcarla como creada por la IA
+* Las estructuras generadas por la IA deben integrarse en el sistema nativo del juego
+* Estas estructuras deben comportarse como sistemas nativos completos (actualizables, modificables y persistentes)
+* La única diferencia es que deben estar identificadas como “creadas por la IA” dentro del sistema nativo
+* No deben perder coherencia ni funcionalidad por haber sido generadas por IA
+* Deben coexistir con estructuras nativas sin separarse funcionalmente
+
+OBJETIVO:
+Permitir que la IA construya sistemas complejos del mundo sin romper la coherencia del sistema nativo del juego, diferenciando únicamente el origen de creación (IA vs nativo), no su funcionalidad.
+
+⸻
+
+6. Sistema de plantillas globales de SECCIONES PERSONALIZADAS:
+    Debe existir un sistema de plantillas reutilizables exclusivamente para secciones personalizadas.
+
+Esto permite:
+
+* Crear estructuras una vez y reutilizarlas en múltiples partidas
+* Estandarizar sistemas complejos dentro de secciones personalizadas
+* Reducir repetición manual en creación de sistemas
+* Mantener compatibilidad entre partidas nuevas y antiguas
+* Versionado básico de plantillas
+
+IMPORTANTE:
+
+* Este sistema aplica únicamente a SECCIONES PERSONALIZADAS
+* No debe interferir ni mezclarse con sistemas nativos del juego
+* Las plantillas solo afectan la creación de estructuras dentro de secciones personalizadas
+
+⸻
+
+NOTA SOBRE NARRACIÓN Y FORMATO:
+La IA narrativa ya cuenta con herramientas de formato (negrita, cursiva, saltos de línea, estructura visual de texto, etc.). Estas pueden usarse de forma opcional dentro de la narración cuando sea coherente con la historia.
+
+Los saltos de línea deben ser naturales y reales dentro de los campos de las secciones personalizadas, como en editores modernos (ChatGPT, Notion, Obsidian), no texto “pegado” ni artificial.
+
+No es obligatorio usar formato, pero la IA debe tener la capacidad de usarlo cuando mejore la claridad o la inmersión narrativa.

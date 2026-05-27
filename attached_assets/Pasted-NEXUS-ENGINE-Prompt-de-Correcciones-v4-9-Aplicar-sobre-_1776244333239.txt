@@ -1,0 +1,57 @@
+NEXUS ENGINE — Prompt de Correcciones v4.9
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+EXPORTAR E IMPORTAR PARTIDA — SISTEMA COMPLETO
+Agregue un sistema completo de exportación e importación del estado de partida, accesible desde un lugar visible de la interfaz (menú principal, ajustes o panel dedicado).
+
+Exportar: genera un archivo JSON descargable que contiene el estado completo de la partida en ese momento — personaje, NPCs, facciones, mundo, inventario, historial narrativo, configuración y cualquier otra sección existente. El archivo debe incluir un campo de versión del esquema para identificar con qué versión del juego fue creada. Este sistema debe funcionar correctamente: el archivo debe descargarse sin fallos y contener todos los datos completos de la partida.
+
+Importar: permite subir un archivo JSON exportado previamente. Al importar, el sistema debe comparar la versión del esquema del archivo con la versión actual del juego. Si el esquema es más antiguo (porque se agregaron nuevas secciones o campos desde que se exportó), el sistema debe migrar automáticamente el JSON al esquema actual: los campos nuevos que no existían en el JSON importado se inicializan con valores coherentes basados en el contexto existente de la partida, y la IA narrativa los rellena adecuadamente en el primer turno tras la importación. El jugador nunca debe encontrarse con campos vacíos o rotos por importar una versión anterior — la migración es siempre automática, transparente y sin pérdida de datos. Este sistema debe funcionar correctamente: la subida del archivo debe completarse sin errores y restaurar completamente la partida.
+
+Este sistema es la forma principal de transferir una partida entre cuentas o entre instancias del juego.
+
+PROBLEMA 2 — FICHAS QUE NO SE ACTUALIZAN CON EL TIEMPO NARRATIVO
+La IA actualmente solo agrega información nueva encima de lo existente pero nunca reescribe los campos que han cambiado. Esta es la causa de fichas permanentemente incoherentes con la historia real.
+Regla fundamental permanente: en cada turno, la IA reescribe activamente cualquier campo que haya cambiado. No agregue encima. Reescribir. Sin excepciones. En todos los turnos. Para siempre. Esta regla se aplica también a cualquier sección o campo que se añada en el futuro.
+
+En cada turno la IA recalcula y reescribe obligatoriamente todos los campos afectados:
+Para el personaje jugador: edad calculada desde su fecha de nacimiento y el año narrativo actual, descripción física coherente con esa edad exacta, atributos vitales, descriptores, habilidades con su nivel de dominio actual, estado de salud, clima emocional, deseos y miedos según lo vivido.
+Para cada NPC: edad calculada desde su fecha de nacimiento y el año narrativo actual, descripción física acorde a esa edad real, estado vital, última ubicación conocida, estado de la relación con el jugador, condiciones de salud conocidas. Cada NPC se recalcula individualmente en cada turno, siempre.
+Para el mundo: estado político, económico, eventos activos o resueltos, estado de facciones.
+
+Cuando la narración cubre un salto temporal de cualquier magnitud, la IA calcula el tiempo exacto transcurrido y propaga ese cambio a todas las fichas. Ningún campo dependiente del tiempo puede quedar con un valor de una fecha anterior a la narrativa actual.
+
+PANEL “ACTUALIZAR ESTADO” — REPARAR Y COMPLETAR
+El panel ya existe visualmente pero da error al ejecutar. Reparar el pipeline completo para que funcione de verdad:
+
+Actualización General: llama a la IA con TODO el estado completo del juego sin excepción — TODAS las secciones, TODA la narrativa acumulada, TODA la memoria IA disponible, TODAS las fichas, TODAS las subsecciones, TODAS las funciones y cualquier elemento existente o futuro — y le pide reescribir activamente todos los campos de forma coherente con la narración acumulada. Muestra indicador de progreso real. Al terminar muestra un resumen de qué cambió. Si falla, reintenta automáticamente — nunca muestra error sin intentarlo al menos 3 veces.
+
+Actualización por secciones: misma lógica pero solo para las secciones seleccionadas. Las casillas de verificación deben incluir todas las secciones existentes. Al pulsar Actualizar, ejecuta el proceso real sin errores.
+
+En ambos casos la IA se guía de la narración acumulada, el estado existente de todas las fichas, la Memoria IA si está disponible y el contexto completo de la partida.
+
+EDICIÓN MANUAL CON SUGERIR — IMPLEMENTAR COMPLETAMENTE
+Esta funcionalidad no existe en ninguna parte de la UI actual. Implementarla en su totalidad:
+
+El jugador debe poder editar cualquier campo de cualquier sección del juego. Al tocar o mantener presionado cualquier campo editable en cualquier panel (personaje, NPCs, facciones, mundo, inventario, relaciones, consecuencias, legado, lugares, o cualquier sección futura) aparece la opción de editarlo directamente. Los campos de texto se vuelven editables en línea. Las listas permiten añadir, editar o eliminar entradas. Los valores de escala permiten ajuste manual.
+
+Junto a cada campo o sección editable existe un botón “Sugerir” que abre un input donde el jugador escribe en lenguaje natural lo que quiere cambiar, y la IA lo interpreta y aplica coherentemente con el contexto de la partida. Esta función es el inicio de una IA de asistencia externa a la narración que en versiones futuras se expandirá a un chat completo.
+
+Los cambios manuales y sugeridos se marcan como editados manualmente. La IA narrativa respeta estas marcas y no sobreescribe esos campos en turnos posteriores salvo que la narración lo justifique explícitamente.
+
+REGLA GLOBAL PERMANENTE
+Todo lo descrito en este mensaje son comportamientos permanentes del sistema, no correcciones puntuales. Se aplica en cada turno, siempre, para todas las secciones existentes y futuras, independientemente de la era, época o tipo de partida.
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+ORDEN DE PRIORIDAD:
+•	Sistema de exportar/importar JSON con migración automática de esquema
+•	Corrección del sistema de actualización — la IA reescribe campos, no añade encima
+•	Panel de reparación “Actualizar Estado” para que funcione realmente
+•	Implementar edición manual con botón Sugerir en toda la UI
+
+INSTRUCCIÓN DE IMPLEMENTACIÓN PROGRESIVA
+Si los créditos o el contexto disponible no permiten completar todo en una sola sesión, implementa en el orden estricto de prioridad y detente limpiamente al agotar recursos. Nunca dejes un archivo en estado roto. Es preferible implementar menos puntos pero que todo lo implementado funcione correctamente. En la siguiente sesión continúa exactamente donde se detuvo.
+
+Al terminar: reporte detallado de qué se implementó en cada punto, qué quedó pendiente y por qué. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto.

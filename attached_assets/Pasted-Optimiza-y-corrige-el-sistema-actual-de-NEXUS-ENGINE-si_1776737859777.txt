@@ -1,0 +1,241 @@
+Optimiza y corrige el sistema actual de NEXUS ENGINE sin romper ninguna funcionalidad existente ni alterar la experiencia del jugador.
+
+IMPORTANTE:
+- No eliminar sistemas actuales
+- No cambiar la lógica narrativa
+- No modificar las reglas ya implementadas
+- Mantener compatibilidad total con el sistema actual
+
+---
+
+PROBLEMA CRÍTICO A SOLUCIONAR
+
+Actualmente, cuando se agota el límite de una IA (ej: Anthropic), al cambiar manualmente a otra IA (ej: Gemini), el sistema sigue comportándose como si el límite estuviera agotado y no responde correctamente.
+
+SOLUCIÓN OBLIGATORIA:
+- Detectar correctamente qué proveedor de IA está activo en cada solicitud
+- Asegurar que cada llamada use exclusivamente la API correspondiente al modelo seleccionado
+- Separar completamente el estado de uso/cuota entre proveedores (Anthropic, Gemini, etc.)
+- Evitar que errores de cuota de un proveedor afecten a otro
+- Implementar fallback real: si una IA falla por límite, permitir usar otra inmediatamente sin bloqueo
+
+---
+
+SISTEMA DE MONITOREO DE TOKENS (NUEVO - CRÍTICO)
+
+Implementar un sistema visible y funcional de seguimiento de uso de tokens por IA.
+
+1. CONTADOR POR NARRACIÓN (EN PARTIDA)
+- Mostrar después de cada respuesta:
+  - Tokens utilizados en esa narración
+  - IA utilizada
+- La información debe generarse dinámicamente, sin valores fijos o simulados
+
+2. CONTADOR EN EDITOR (DENTRO DE PARTIDA)
+- Mostrar acumulado de la sesión actual:
+  - Tokens consumidos por cada IA
+  - Número de llamadas realizadas
+- Debe actualizarse en tiempo real y reflejar el uso real
+
+3. CONTADOR GLOBAL (CONFIGURACIÓN / MENÚ PRINCIPAL)
+- Mostrar por cada IA:
+  - Tokens consumidos según el periodo del proveedor (diario o mensual)
+  - Límite total disponible si existe
+  - Cantidad restante
+  - Tiempo estimado o fecha de reinicio (si aplica)
+- Toda la información debe provenir de datos reales o estimaciones dinámicas, no valores estáticos
+
+4. DETECCIÓN AUTOMÁTICA
+- Extraer datos desde las respuestas de la API (usage, headers u otros metadatos disponibles)
+- Si el proveedor no devuelve datos exactos, estimar el consumo de forma coherente y consistente
+
+5. OBJETIVO
+Permitir al usuario:
+- Entender cuánto consume cada turno
+- Identificar qué IA está gastando más recursos
+- Ajustar su uso de forma informada
+
+---
+
+OPTIMIZACIÓN DE CONSUMO (SIN CAMBIAR EL SISTEMA)
+
+1. Reducir el número de llamadas por turno:
+- Unificar narración + estado en una sola llamada cuando sea posible
+
+2. Reducir contexto enviado:
+- Enviar solo últimos 1–2 turnos + resumen existente
+- No enviar historial completo
+
+3. Evitar respuestas excesivamente largas por defecto:
+- Respetar las reglas narrativas existentes
+- Evitar expansión innecesaria
+
+4. Evitar redundancia:
+- No repetir información previa
+- No reexplicar contexto ya conocido
+
+5. Mantener uso de modelos:
+- Modelo de alta calidad → narración
+- Modelo económico → estado, memoria, sistemas auxiliares
+
+---
+
+IMPLEMENTACIÓN DE SISTEMA HÍBRIDO (ESTILO AI REALM)
+
+Agregar una capa de sistema que reduzca el uso innecesario de IA sin cambiar la experiencia del jugador.
+
+Principio:
+No todos los turnos requieren IA.
+
+Objetivo de balance:
+- Aproximadamente 70% del flujo manejado por sistema (sin IA)
+- Aproximadamente 30% del flujo manejado por IA
+- Este balance no es rígido, debe ajustarse dinámicamente según contexto, tipo de acción y modelo activo
+
+Compatibilidad:
+- Debe funcionar correctamente tanto con múltiples proveedores (Gemini, Anthropic, etc.)
+- El sistema debe adaptarse al modelo activo sin depender de uno solo
+
+CLASIFICACIÓN DE TURNOS:
+
+1. Turnos simples (NO usar IA)
+- Viajes
+- Movimientos
+- Acciones sin riesgo
+- Transiciones
+- Observaciones básicas
+
+Resolver mediante sistema interno con plantillas dinámicas.
+
+2. Turnos relevantes (SÍ usar IA)
+- Eventos
+- Decisiones importantes
+- Diálogos significativos
+- Situaciones con riesgo
+
+---
+
+LÓGICA DE DECISIÓN (CRÍTICA)
+
+Antes de cada llamada:
+
+¿La acción cambia el estado del mundo de forma significativa?
+
+- NO → sistema sin IA
+- SÍ → IA
+
+---
+
+SISTEMA HÍBRIDO DE NARRACIÓN (NUEVO - CRÍTICO)
+
+Implementar un modelo de generación donde el Sistema y la IA colaboran en la misma respuesta cuando sea apropiado.
+
+Principio:
+No reutilizar texto narrativo antiguo directamente. Reutilizar estructura, estado y contexto.
+
+Funcionamiento:
+
+1. BASE DEL SISTEMA (SIN IA)
+- Generar la estructura base de la narración usando:
+  - ubicación
+  - clima
+  - estado del personaje
+  - continuidad del entorno
+- Esta base debe ser coherente, reutilizable y sin coste de tokens
+
+2. CAPA DE IA (COMPLEMENTO)
+- La IA se encarga de:
+  - añadir emoción
+  - introducir tensión
+  - enriquecer la escena
+  - generar eventos si aplica
+- Debe complementar la base, no rehacerla completamente
+
+Reglas:
+
+- No duplicar información ya dada por el sistema
+- No reescribir completamente la base generada
+- Mantener coherencia total con el estado actual
+
+Uso:
+
+- Aplicar en turnos intermedios o de transición
+- No usar en eventos críticos o escenas importantes (ahí la IA debe generar completamente)
+
+Objetivo:
+Reducir tokens manteniendo calidad narrativa mediante colaboración sistema + IA
+
+---
+
+USO DE PLANTILLAS
+
+Implementar plantillas reutilizables para:
+- Viajes
+- Exploración
+- Espera
+- Transiciones
+
+Adaptadas al contexto.
+
+---
+
+SEPARACIÓN DE MEMORIA (CRÍTICO)
+
+Toda la memoria debe organizarse dentro de la sección "Memoria IA".
+
+Dividir en dos capas claramente diferenciadas:
+
+1. HISTORIA:
+- Texto largo, narrativo y detallado
+- Funciona como archivo histórico
+- No se envía en cada turno
+- Solo se usa en eventos importantes o reconstrucción narrativa
+
+2. RESUMEN IA (ACTUAL DEBE SER REAJUSTADO):
+- El sistema actual de "Resumen IA" debe ser modificado, no duplicado
+- Debe transformarse en contexto activo optimizado, no mantenerse como narrativa resumida
+
+Debe cumplir:
+- Ser corto, claro y estructurado
+- Representar el estado actual del juego, no la historia completa
+- Incluir solo información útil para decisiones inmediatas
+
+---
+
+FORMATO DEL RESUMEN IA
+
+Debe incluir:
+- Estado actual del personaje
+- Edad / tiempo actual
+- Relaciones relevantes
+- Situación actual
+- Objetivo activo
+- Información clave reciente
+
+No incluir:
+- narrativa extensa
+- historia completa
+- descripciones innecesarias
+
+---
+
+ACTUALIZACIÓN DEL RESUMEN IA
+
+- NO actualizar automáticamente en cada turno
+- SOLO actualizar cuando haya cambios importantes:
+  - nuevos personajes
+  - cambios de relaciones
+  - eventos relevantes
+  - progreso significativo
+
+---
+
+RESULTADO ESPERADO
+
+- Cambio de IA funcional
+- Sistema híbrido operativo (equilibrio sistema/IA)
+- Reducción masiva de tokens
+- Visibilidad total del consumo
+- Mayor duración por sesión
+- Control total del usuario sobre uso de IA
+- Memoria optimizada sin duplicaciones ni redundancia

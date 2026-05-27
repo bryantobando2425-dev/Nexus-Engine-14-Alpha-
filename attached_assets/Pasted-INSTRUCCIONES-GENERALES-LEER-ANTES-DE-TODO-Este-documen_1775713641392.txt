@@ -1,0 +1,17 @@
+INSTRUCCIONES GENERALES — LEER ANTES DE TODO
+Este documento es una actualización sobre un proyecto existente y en funcionamiento. No elimines, reescribas ni reemplaces nada que ya esté implementado y funcione. Si algo ya existe, mejóralo o amplíalo sin romperlo. Si algo nuevo entra en conflicto aparente con algo existente, prioriza mantener lo que ya funciona y adapta lo nuevo alrededor de ello.
+
+No simplifiques funciones ya implementadas para hacer espacio a las nuevas. No muevas archivos ni reestructures el proyecto salvo que sea estrictamente necesario y lo justifiques. No cambies el diseño visual de lo que ya funciona correctamente. No toques la base de datos ni el esquema de Supabase sin confirmación explícita. No elimines partidas guardadas, datos de usuario ni historial narrativo bajo ninguna circunstancia.
+
+Implementa todo de forma incremental. Cuando termines, reporta exactamente qué se hizo, qué quedó pendiente y por qué.​​​​​​​​​​​​​​​​
+
+---
+
+INSTRUCCIONES DE ACTUALIZACIÓN — PARTIDA EXISTENTE
+Nada de la partida activa actual debe alterarse, reiniciarse ni perderse. Todas las nuevas funciones se implementan sobre lo ya existente con total coherencia narrativa, como si siempre hubieran estado ahí. Si el personaje ya tiene historia, edad, relaciones e inventario, todo eso se respeta y se integra.
+
+NARRACIÓN — MODO DE VISUALIZACIÓN
+La narración NO debe mostrarse mientras se escribe (sin efecto de texto streamado visible). La IA genera el texto completo internamente y mientras lo hace se muestra una pantalla de transición: un reloj o calendario animado que avanza mostrando el tiempo que transcurre en la historia acorde a lo que se está narrando (horas, días, meses según el contexto). Cuando el texto está listo, el reloj se detiene y la narración aparece completa de una sola vez con un fade-in suave.
+
+BARRA SUPERIOR — TOP BAR
+En la esquina superior izquierda mostrar siempre, en formato compacto: día completo, mes y año en juego (ej. “14 de septiembre, 1245”). Debajo o al lado: localización actual. Debajo: Destino (si no hay ninguno activo, mostrar “—”). Se pueden añadir más campos funcionales relevantes al estado actual del personaje si hay espacio (clima, hora del día, etc.) pero solo si son informativos y reales, no decorativos.​​​​​​​​​​​​​​​​

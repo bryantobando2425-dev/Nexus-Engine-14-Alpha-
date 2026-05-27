@@ -1,0 +1,114 @@
+NEXUS ENGINE — Prompt de Correcciones v4.6 
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+PROBLEMA RAÍZ — ARQUITECTURA DE ESTADO (PRIORIDAD MÁXIMA)
+El problema principal del proyecto es que la IA narrativa no está leyendo ni escribiendo correctamente el estado del juego entre turnos. Esto causa que la historia quede estancada, el inventario aparece vacío, las habilidades no se registran, el mapa no marca posiciones, y las consecuencias no se resuelvan aunque la narración ya las haya superado.
+Antes de cualquier corrección de UI, se debe verificar y reparar completamente el flujo de datos en cada turno: qué estado se lee antes de narrar, qué devuelve la IA tras narrar, y cómo ese retorno actualiza el estado persistente del juego. Este flujo debe funcionar de forma confiable en cada turno sin excepción.
+
+PRINCIPIO FUNDAMENTAL — POBLADO AUTOMÁTICO TOTAL
+La IA narrativa debe actualizar ABSOLUTAMENTE TODO de forma autónoma tras cada turno, sin requerir intervención manual del jugador. La IA lee el estado completo antes de narrar y escribe todas las actualizaciones después. Si algo no cambió en la narración, se mantiene igual. Nunca dejar vacío algo que ya tenía información.
+Actualiza sin excepción tras cada turno: Inventario (añadir lo recogido, quitar lo usado/perdido/destruido, actualizar condición de ítems deteriorados), Relaciones (carga emocional según ocurridas), Atributos (según esfuerzo físico, descanso, hambre, estrés narrados), Habilidades (mejorar o añadir según lo practicado), NPCs (estado, ubicación conocida, actitud, condiciones), Facciones (reputación si hubo interacción relevante), Mundo — Tiempo (fecha y hora avanzan exactamente lo cubierto por la narración), Mundo — Localización (añade lugar si es nuevo), Mundo — Política (si hubo eventos políticos), Mundo — Religión (si se descubrió información religiosa), Mundo — Economía (si hubo transacciones o cambios), Mundo — Eventos (conflictos, fenómenos, festividades ocurridas), Mundo — Historia (si ocurrió algo de peso histórico), Mundo — Geografía y Fauna (si se descubrió información del lugar), Mapa (marca lugar visitado si es nuevo), Psicología (clima emocional, traumas, deseos/miedos si evolucionaron), Legado (registra momento definitorio si aplica), Consecuencias (añade nuevas, actualiza estado de las pendientes).
+Si la información ya existía desde la creación de partida, debe aparecer poblada desde el primer turno, nunca vacía.
+
+COHERENCIA NARRATIVA — CONSECUENCIAS, LEGADO Y ESTADO DEL MUNDO
+Este es un problema crítico activo: las consecuencias pendientes, el legado, el estado de los NPCs y todos los eventos programados deben evaluarse en cada turno contra lo que realmente ocurrió en la narración. No son contadores mecánicos que decrementan turno a turno de forma ciega.
+Reglas obligatorias de coherencia:
+Si el jugador avanzó tiempo (saltó años, meses, semanas), la IA debe resolver automáticamente todas las consecuencias cuyo momento ya pasó, de forma coherente con el contexto. Ejemplo concreto del problema activo: si una consecuencia decía "Elena morirá en 3 turnos" pero el jugador saltó años y narrativamente Elena se recuperó, esa consecuencia debe marcarse como Resuelta/Cancelada inmediatamente, no seguir contando turnos hacia una muerte que ya no tiene sentido.
+Si ocurrieron eventos que anulan una consecuencia, cancelela y explique por qué. Si una relación cambió excesivamente, actualice todas las consecuencias vinculadas a esa relación. Si un NPC murió, desapareció o cambió de estado, cancele o modifique todas las consecuencias que dependían de ese NPC en su estado anterior. Si el personaje adquiere nuevas capacidades, aliados o recursos, reevaluar si las consecuencias negativas pendientes siguen siendo inevitables.
+El Legado, la Historia del Personaje, los Eventos del Mundo y las Consecuencias deben complementarse y estar siempre sincronizados entre sí y con la narración. Lo que ocurre en la historia se refleja en todos estos paneles de forma coherente y automática.
+Cada consecuencia activa debe mostrar su estado: Activa / Resuelta / Cancelada / Modificada , con una línea explicando el motivo del estado actual.
+
+ENTRADA DE ACCIONES — FIX MÓVIL Y ESCRITORIO
+Todos los botones de acción deben ser visibles, legibles y completamente funcionales tanto en el móvil como en el escritorio. Botones según edad: edades 0–6 solo sugerencias narrativas automáticas; edades 7+ acceso progresivo a: Libre / Hablar / Acción / Observar / Pensar. Ningún botón debe quedar cortado, solapado o ilegible. El diseño debe adaptarse a cualquier tamaño de pantalla. Los botones no deben mostrar texto en código interno como __AUTO_INFANT__— siempre texto legible en español.
+
+NARRACIÓN — CONTROLES DE TEXTO
+Los botones "Regenerar" y "Deshacer" ya existen. Verifique que funcionen correctamente: "Regenerar" re-genera la misma escena con resultado diferente sin avanzar historia ni modificar estado; "Deshacer" restaura el estado completo del juego al turno anterior incluyendo inventario, relaciones, mundo y personaje.
+
+NARRACIÓN — TRANSICIÓN CON RELOJ
+El reloj animado ya existe. Pulir: debe mostrar día/mes/año y hora durante la transición; el tiempo debe avanzar visualmente de forma animada y coherente con lo narrado (si cubre una semana, avanza esa semana; si cubre un día, avanza ese día); no debe quedar estático. Al terminar: el reloj se detiene, la narración aparece completa con un desvanecimiento suave, la barra superior se actualiza.
+
+BARRA SUPERIOR — SINCRONIZACIÓN TOTAL
+Mostrar siempre: fecha completa en juego (día/mes/año con nombre de mes apropiado a la era), hora del día, localización actual específica, destino si existe o "—". Se sincroniza automáticamente con cada narración. El año del top bar debe coincidir siempre con el año del estado del juego, nunca desactualizarse.
+
+ICONOS Y EMOJIS — CORRECCIÓN
+NO eliminar todos los emojis. Reemplazar emojis casuales o genéricos por iconos SVG profesionales apropiados al contexto. Si no existe un icono profesional adecuado, se permite usar un emoji apropiado. La UI debe tener indicadores visuales siempre.
+
+PERSONAJE — IDENTIDAD
+La fecha de nacimiento completa ya aparece correctamente. Añadir los campos faltantes: lugar de nacimiento completo, nombre del padre y de la madre visibles en Identidad, religión, lengua materna. La descripción del personaje debe ser estrictamente coherente con la edad actual: un recién nacido se describe como recién nacido, un niño de 9 años como niño de 9 años, nunca como adulto. Si algo cambia básicamente en la narración, la descripción se actualiza en el siguiente turno. El retrato se regenera ante cambios físicos significativos. La descripción siempre en tiempo presente y acorde a la edad exacta. Nunca mostrar el texto literal "(La IA narrativa debe ACTUALIZAR la descripción del personaje adecuadamente)" — ese es un marcador de posición interno que nunca debe ser visible al jugador; la IA debe reemplazarlo siempre con la descripción real.
+
+PERSONAJE — DESCRIPTORES
+Coherentes con la historia vivida. Parten del estado más bajo o neutro y suben solo cuando la narración lo justifica. Terminología apropiada a la era activa. Cada descriptor tiene información sobre herramientas ⓘ con ejemplos y lenguaje de la era. La sección también tiene su propio ⓘ general.
+
+PERSONAJE — INVENTARIO
+Reescribir completamente. Al tocar cualquier elemento se abre una pantalla individual detallada. Cada ítem muestra: nombre, descripción narrativa completa, condición (Nuevo / Usado pero funcional / Deteriorado / Roto / Gastado / Fresco / Permanente), peso en unidades de la era (libras, arrobas, onzas — nunca "unidades" genéricas), cantidad si es apilable. Indicador de capacidad de carga total vs peso real portado, calculado según complexión y estado físico. Subsección "Vestimenta" separada por capas (interior, exterior, calzado, cabeza, complementos), cada prenda afecta temperatura y percepción social. Subsección "Monedas": nombre de moneda apropiado a la era (nunca "Monedas" genérico), cantidad, referencia de poder adquisitivo contextual. Todo editable desde el Editor.
+
+PERSONAJE — HABILIDADES
+Las habilidades seleccionadas en la creación de partida deben aparecer desde el inicio aunque el personaje tenga 0 años — representan capacidades iniciales definidas por el jugador que desarrollará a lo largo de su vida de forma coherente con la narración. Cada habilidad muestra: nombre, nivel de dominio en escala de 5 niveles (Ignorante / Aprendiz / Competente / Experto / Maestro), botón ⓘ individual con descripción narrativa de qué permite hacer esa habilidad en la era activa, cómo se adquiere y cómo mejora. La sección tiene su propio ⓘ general. Las limitaciones también tienen ⓘ con efecto narrativo concreto. Subsección "Conocimientos" separada: idiomas conocidos, áreas de conocimiento teórico, oficios aprendidos parcialmente. Todo se actualiza automáticamente con la narración.
+
+PERSONAJE — RELACIONES
+Verificar que la sección Familia se puebla automáticamente con NPCs de rol familiar desde la creación — si funciona, no modificar. Cada entrada muestra descriptor textual de la relación con escala amplia (Amor incondicional / Amor profundo / Afecto genuino / Aprecio / Simpatía / Neutral / Indiferencia / Distancia / Desconfianza / Tensión / Rivalidad / Animadversión / Odio / Enemistad declarada / Enemistad mortal, más variantes: Deuda emocional / Lealtad forzada / Miedo respetoso / Fascinación / Dependencia). Color e icono claramente visibles: verde para positiva, rojo para negativa, amarillo para tensa, gris para neutro, morado para compleja. Al tocar cualquier NPC en Relaciones se abre directamente su ficha individual del panel Personas — ambos paneles sincronizados y complementarios.
+
+PERSONAJE — HISTORIA
+Cada entrada muestra día, mes y año completos (nunca solo el año). Indicador visual de período cerrado vs activo. Entradas ampliables. Se añadirán automáticamente cuando ocurran eventos significativos en la narración.
+
+PERSONAJE — PSICOLOGÍA
+Los miedos y deseos definidos en la creación deben aparecer poblados desde el inicio — son la psicología base del personaje. A lo largo de la narración pueden evolucionar coherentemente: surgen nuevos, atenuarse, intensificarse o desaparecer según lo vivido, siempre de forma realista. Añadir: clima emocional actual con indicador de color, registro de voz interior, marcadores de trauma con efecto narrativo, arco de desarrollo del personaje generado periódicamente.
+
+PERSONAJE — LEGADO Y CONSECUENCIAS
+Legado: acciones de alto peso narrativo con turno + día/mes/año, objetos dejados atrás, relaciones con resonancia futura, momentos definitorios registrados automáticamente. Consecuencias: no con contador fijo — pueden estar en turno concreto, pendiente indefinido, o canceladas/resueltas. Cada consecuencia muestra: descripción, fecha estimada o "Pendiente" o "Resuelta", turno si aplica, estado actual con motivo. Ver sección de Coherencia Narrativa para las reglas de resolución automática.
+
+NPCs — FICHA INDIVIDUAL COMPLETA
+9 pestañas por NPC. La visibilidad de la información depende del contexto: relación con el NPC, capacidades del personaje (un espía sabe más), acciones tomadas (espías enviadas, sobornos, investigación), o nivel de confianza muy alto. NPCs familiares o íntimos tienen sus pestañas pre-pobladas con lo que el personaje lógicamente conocería. Solo muestran "???" los campos genuinamente desconocidos dado el contexto.
+Pestaña Identidad: retrato (silueta SVG sin Replicar), nombre, fecha de nacimiento, lugar de origen, género, clase social, ocupación, última ubicación conocida, descripción física completa. Tab Atributos: mismas Dimensiones Vitales y Perfil de Competencia que el PJ, visibilidad contextual. Tab Descriptores: misma estructura que el PJ, visibilidad contextual. Tab Habilidades: escala de 5 niveles, visibilidad contextual. Tab Relación: escala amplia de carga emocional, momentos clave, última actitud conocida, historial automático. Tab Inventario conocido: solo ítems que el PJ tiene constancia. Pestaña Motivaciones: objetivos y miedos, visibilidad contextual. Tab Historia conocida: acumulada desde todos los turnos, visibilidad contextual. Tab Estado: vivo/muerto/desaparecido, condiciones conocidas, detalles.
+
+FACCIONES — PANEL COMPLETO
+Las facciones se generan y prepoblan automáticamente desde la creación, basan en la era, región y contexto de la partida — nunca las mismas facciones fijas, siempre coherentes con la partida específica. Dos listas: Organizaciones Formales y Grupos Informales. Formulario de creación manual completo.
+9 pestañas por facción: Identidad / Cultura y Valores / Religión y Lengua / Clase Social y Estructura / Política / Territorio / Historia / Miembros conocidos / Estado actual. Todos con información prepoblada coherente con el contexto. La reputación del jugador se actualiza solo por narración.
+
+MUNDO — TIEMPO
+Mostrar: año, era, estación, clima detallado (temperatura específica, dispensador, viento), hora del día, día de la semana si aplica, fase lunar si aplica. Todo actualizado con cada narración.
+
+MUNDO — LOCALIZACIÓN
+Sistema jerárquico completo: lugares principales con sub-lugares anidados, añadidos automáticamente al visitarse. Descripción sensorial completa del lugar actual (olores, sonidos, texturas, arquitectura, actividad, población estimada). Sincronización bidireccional con el Mapa.
+
+MUNDO — POLÍTICA
+Tres secciones claramente separadas: Política Local (autoridades del lugar actual, normas locales, conflictos inmediatos), Política Global (lugares conocidos + rumores oídos), Política de mi Facción/Reino (desbloqueable). Sección separada para Grupos Informales. Todo prepoblado coherente con era, región y contexto de la partida.
+
+MUNDO — RELIGIÓN
+Pre-poblar automáticamente desde la creación según era, región y contexto — nunca vacío si el contexto lo implica. Mostrar: religiones dominantes, instituciones conocidas, territorios y jerarquías, prácticas y rituales, relación con el poder político, festividades del calendario. Se actualiza automáticamente con la narración.
+
+MUNDO — ECONOMÍA
+Por facción y región, coherente con la era. Moneda con nombre apropiado (nunca "Monedas" genérico). Precios de referencia de bienes comunes. Estado económico del lugar actual. Rutas comerciales conocidas. Recursos escasos y abundantes. Prepoblado desde el contexto de la partida.
+
+MUNDO — GEOGRAFÍA Y FAUNA
+Referenciadas siempre al lugar específico donde está el personaje. Al tocar el nombre de un lugar se abre su geografía y fauna específica — no lista global genérica. Por defecto muestra el lugar actual. Buscador para navegar entre lugares. Fauna y flora del bioma, clima y era del lugar específico, variando correctamente entre lugares distintos. Botón de añadir manual en todas las secciones.
+
+MUNDO — EVENTOS E HISTORIA
+Prepoblados según el contexto histórico de la partida. Eventos Activos registrados automáticamente. Historia del Mundo en línea de tiempo automática. Botón de añadir manual. Nunca vacío si la información existe.
+
+MAPA — REDISEÑO COMPLETO
+Eliminar definitivamente el estilo pixelado. Tierra real como base por defecto. Completamente interactivo: arrastrable, acercar/alejar, navegable. El marcador de posición actual debe aparecer correctamente sobre el mapa real en las coordenadas geográficas reales del lugar donde ocurre la historia — si la partida es en Mississippi 1800, el marcador aparece en Mississippi, no en un punto aleatorio. El estilo visual se adapta a la era activa (no hay un solo estilo fijo). Para mundos ficticios se usa el mapa del editor externo. Lugares explorados marcados y sincronizados bidireccionalmente con Localización. Niebla de guerra en zonas no visitadas. Puntos de interés con información sobre herramientas. Se actualiza con cada narración.
+
+EDITOR — RITMO
+Verifique que "Regenerar última narración" y "Corregir continuidad" funcionen correctamente. El control deslizante de intensidad y el control deslizante de ritmo narrativo deben tener valor por defecto (intensidad: Normal; ritmo: Normal).
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+ORDEN DE PRIORIDAD:
+
+Reparar arquitectura de estado — flujo de lectura/escritura del estado entre turnos
+Poblado automático total tras cada turno
+Coherencia narrativa — consecuencias, legado, eventos resueltos automáticamente según lo narrado
+Pre-poblado desde creación
+NPCs — fichas completas con visibilidad contextual inteligente
+Facciones — prepobladas por contexto, formulario completo
+Personaje — identidad (campos faltantes), descriptores, inventario con pantalla individual, habilidades con 5 niveles y ⓘ, relaciones con colores y link a ficha NPC, historia, psicología, legado, consecuencias
+Mundo — Política en 3 secciones, Religión pre-poblada, Economía con moneda real, Geografía/Fauna por lugar con buscador, Eventos/Historia pre-poblados
+Mapa — Tierra real interactiva con marcador en coordenadas reales, estilo adaptado a era
+Narración — verificar Regenerar y Deshacer; pulir reloj con día/mes/año/hora y avance coherente
+Barra superior — sincronización total con estado del juego
+Entrada — todos los botones visibles y legibles en móvil y escritorio, sin texto en código interno
+Iconos — SVG profesionales, emojis apropiados donde no haya alternativa SVG
+
+Al terminar: reporte detallado de qué se implementó en cada punto, qué quedó pendiente y por qué. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto.

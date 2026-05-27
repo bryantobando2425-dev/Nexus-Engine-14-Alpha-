@@ -1,0 +1,53 @@
+NEXUS ENGINE — Prompt de Correcciones v4.8 (Parche Crítico)
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+PROBLEMA 0 — PERSISTENCIA DE ESTADO (CAUSA RAÍZ DE MÚLTIPLES FALLOS)
+Todo el estado del juego debe persistir en Replit Database (el key-value store incluido en Replit), nunca en variables de memoria ni en archivos locales del servidor. El sistema de archivos local de Replit se resetea cuando la app se duerme por inactividad y vuelve a despertar, lo que causa pérdida del historial narrativo, estados de fichas, y contexto de la IA.
+Migrar inmediatamente todo lo que actualmente se guarda en memoria o archivos locales a Replit Database: estado completo del juego (personaje, NPCs, facciones, mundo, inventario, relaciones, consecuencias, legado, mapa), historial de turnos narrativos, configuración del Editor, y cualquier otro dato que deba persistir entre sesiones.
+Al iniciar la app, cargar siempre el estado desde Replit Database. Al finalizar cada turno, escribir el estado actualizado en Replit Database antes de devolver la respuesta al jugador. Si Replit Database no está disponible momentáneamente, reintentar automáticamente antes de mostrar error.
+Esto resuelve: la narración que se congela al retomar una sesión, el historial que desaparece, la IA que pierde el contexto y deja de narrar correctamente.
+
+PROBLEMA 1 — NARRACIÓN QUE SE CONGELA O DEJA DE GENERARSE
+Cuando la narración falla, se congela o devuelve errores repetidos, el sistema no debe quedarse bloqueado. Implementar un mecanismo de recuperación automática:
+Si una generación narrativa falla dos veces consecutivas, el sistema debe mostrar un mensaje claro al jugador indicando que hubo un problema y ofrecer tres opciones: reintentar el mismo turno, volver al turno anterior (deshacer), o forzar una actualización de estado sin narrar.
+Si el problema es pérdida de contexto por conversación larga (demasiados mensajes acumulados), el sistema debe comprimir automáticamente el historial de mensajes manteniendo solo el estado JSON completo más los últimos 3 turnos narrativos, sin perder ningún dato del estado del juego. Esta compresión debe ocurrir de forma transparente sin que el jugador pierda nada.
+La IA nunca debe desactivarse ni congelarse por inconsistencias en el estado — si detecta inconsistencias debe resolverlas automáticamente antes de narrar, no bloquearse.
+
+PROBLEMA 2 — FICHAS QUE NO SE ACTUALIZAN CON EL TIEMPO NARRATIVO
+Este es el error más crítico activo. La IA actualmente solo añade información nueva por encima de lo existente pero nunca modifica ni corrige los campos que ya tienen datos. Esto produce fichas permanentemente incoherentes con la historia real.
+La regla fundamental es: en cada turno, la IA debe reescribir activamente cualquier campo que haya cambiado desde el turno anterior. No añadir encima. Reescribir. Esto aplica sin excepción a todas las fichas y secciones del juego, en cada turno, para siempre, independientemente de cuánto tiempo lleve la partida.
+En cada turno la IA debe recalcular y reescribir obligatoriamente todos los campos afectados por el tiempo transcurrido y los eventos ocurridos:
+Para el personaje jugador: edad actual calculada desde su fecha de nacimiento y el año narrativo actual del juego, descripción física coherente con esa edad exacta, atributos vitales, descriptores, habilidades y su nivel de dominio, estado de salud, clima emocional, deseos y miedos evolucionados.
+Para cada NPC registrado: edad actual calculada desde su fecha de nacimiento y el año narrativo actual del juego, descripción física actualizada acorde a esa edad, estado vital, última ubicación conocida, estado de la relación con el jugador, condiciones de salud conocidas. Este cálculo se aplica a cada NPC individualmente en cada turno, siempre.
+Para el mundo: estado político actual, estado económico, eventos activos resueltos o nuevos, estado de las facciones.
+Cuando la narración cubre un salto temporal de cualquier magnitud (días, meses o años), la IA debe calcular con precisión cuánto tiempo transcurrió y propagar ese cambio a absolutamente todas las fichas afectadas. Ningún campo que dependa del tiempo puede quedar con un valor anterior al tiempo narrativo actual. Esta regla no tiene excepciones y se aplica en todo momento, en todos los turnos, para siempre.
+
+FUNCIÓN "ACTUALIZAR ESTADO" — NUEVO PANEL
+Añadir un botón permanente y accesible en la interfaz principal llamado "Actualizar Estado". Este botón no activa narración. Su función es forzar una actualización completa y coherente de absolutamente todas las secciones del juego, guiándose del contexto narrativo acumulado, del estado existente de todas las secciones y de la Memoria IA disponible. Esta función debe funcionar correctamente independientemente de la era, época, tipo de partida o secciones que existan — si en el futuro se añaden nuevas secciones, esta función debe actualizarlas también de forma automática.
+Al activar este botón se abre un panel con dos opciones:
+Actualización General: actualiza absolutamente todo de una vez — todas las fichas de personaje, todos los NPCs, todas las facciones, todos los paneles del mundo, inventario, relaciones, consecuencias, legado, mapa y cualquier otra sección existente o futura. Muestra un indicador de progreso y al terminar un resumen de qué se actualizó y qué cambió.
+Actualización por Secciones: muestra una lista de todas las secciones disponibles con un checkbox cada una. El jugador elige cuáles actualizar individualmente y confirma. La IA actualiza solo las seleccionadas con la misma profundidad y coherencia que la actualización general.
+En ambos casos la IA se guía de: la narración acumulada hasta ese momento, los datos existentes en todas las fichas, la Memoria IA si está disponible, y cualquier información relevante del contexto de la partida. El objetivo es que tras pulsar este botón todo el juego quede perfectamente coherente y actualizado sin necesidad de narrar un nuevo turno.
+
+EDICIÓN MANUAL DE CUALQUIER SECCIÓN — NUEVA FUNCIONALIDAD
+El jugador debe poder editar, modificar y añadir contenido en absolutamente cualquier campo de cualquier sección del juego. Esto incluye sin excepción: ficha del personaje jugador (todos sus tabs), fichas de NPCs (todos sus tabs), fichas de facciones (todos sus tabs), fichas de lugares, panel Mundo en todas sus secciones, inventario, relaciones, consecuencias, legado, y cualquier sección que se añada en el futuro.
+La edición debe ser accesible de forma natural desde cada campo — al tocar o mantener presionado cualquier campo editable aparece la opción de modificarlo. Los campos de texto se vuelven editables directamente. Las listas permiten añadir, editar o eliminar entradas. Los valores numéricos o de escala permiten ajuste manual.
+Junto a cada campo o sección editable debe existir un botón "Sugerir" que abre un input de texto donde el jugador puede describir en lenguaje natural lo que quiere cambiar o añadir, y la IA lo interpreta y aplica de forma coherente con el contexto de la partida. Esta función de Sugerir es el inicio de la integración de una IA de asistencia externa a la narración, que en versiones futuras se expandirá a un chat completo capaz de responder preguntas, actualizar el estado y asistir al jugador de forma conversacional.
+Todos los cambios manuales y sugeridos deben registrarse con una marca que indique que fueron editados manualmente, para que la IA narrativa los respete y no los sobreescriba en turnos posteriores salvo que la narración lo justifique explícitamente.
+
+REGLA GLOBAL PERMANENTE — COHERENCIA TOTAL EN TODO MOMENTO
+Todo lo descrito en este prompt no son correcciones puntuales sino comportamientos permanentes del sistema. La IA debe reescribir activamente todos los campos afectados en cada turno, siempre, sin importar cuánto tiempo lleve la partida, cuántos turnos hayan pasado, qué era o época sea, o qué secciones existan. Cuando se añadan nuevas secciones o funcionalidades al juego en el futuro, esta misma regla se aplica automáticamente a ellas. No hay excepciones ni situaciones en las que la IA pueda dejar de actualizar campos que han cambiado.
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+ORDEN DE PRIORIDAD:
+
+Migrar todo el estado del juego a Replit Database para persistencia real entre sesiones
+Corrección del sistema de actualización — la IA reescribe campos existentes en cada turno, siempre
+Recalcular automáticamente todas las fichas tras cualquier avance de tiempo narrativo
+Mecanismo de recuperación ante narración congelada o fallida
+Panel "Actualizar Estado" con opción general y por secciones
+Edición manual de cualquier campo con botón Sugerir en toda la UI
+
+Al terminar: reporte detallado de qué se implementó en cada punto, qué quedó pendiente y por qué. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto.

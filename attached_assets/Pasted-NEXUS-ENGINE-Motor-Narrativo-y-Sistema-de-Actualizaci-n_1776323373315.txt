@@ -1,0 +1,256 @@
+NEXUS ENGINE — Motor Narrativo y Sistema de Actualización Inteligente (v5.2 CONTROL DE CONTEXTO)
+
+PROBLEMA CRÍTICO A RESOLVER
+
+El sistema actual puede fallar cuando la información enviada a la IA crece demasiado (historia completa acumulada). Esto provoca:
+- errores de generación
+- respuestas vacías o fallidas
+- bloqueos intermitentes
+
+CAUSA PRINCIPAL:
+Enviar demasiada información en una sola llamada a la IA.
+
+SOLUCIÓN OBLIGATORIA:
+El sistema NO debe enviar toda la historia a la IA en ningún caso.
+
+IMPORTANTE:
+El juego SÍ conserva toda la historia internamente, pero:
+- NO se envía completa a la IA
+- NO se usa como input directo
+- SOLO se usa mediante memoria resumida
+
+Esto significa:
+NO llamar a la IA con historia completa.
+
+────────────────────────────
+
+DEFINICIÓN DE CONTEXTO PERMITIDO
+
+La IA SOLO puede recibir:
+
+1. MEMORIA IA (resumen estructurado del pasado)
+2. ESTADO ACTUAL (fuente de verdad)
+3. HISTORIAL RECIENTE (últimos turnos limitados)
+4. EVENTO ACTUAL o ACCIÓN DEL JUGADOR
+
+PROHIBIDO:
+- Enviar historia completa
+- Enviar arrays sin límite
+- Enviar datos redundantes o innecesarios
+
+────────────────────────────
+
+ARQUITECTURA DEL SISTEMA
+
+Este sistema NO es una conversación libre. Es un motor estructurado con funciones separadas:
+
+1. Generar narración
+2. Actualizar estado
+3. Mantener memoria optimizada
+
+Cada función debe ejecutarse en llamadas separadas a la IA.
+
+PROHIBIDO:
+- Mezclar narración y actualización en una sola llamada
+
+────────────────────────────
+
+REGLAS GLOBALES PERMANENTES
+
+1. NUNCA llamar a la IA con la historia completa.
+2. NUNCA depender de texto histórico largo para funcionar.
+3. Trabajar únicamente con:
+   - MEMORIA IA (incluye RESUMEN estructurado del pasado)
+   - ESTADO ACTUAL
+   - HISTORIAL RECIENTE
+   - EVENTO ACTUAL
+
+4. NUNCA reescribir todo el estado.
+5. SOLO actualizar lo que haya cambiado en el turno actual.
+6. Si algo no cambia, NO se menciona ni se modifica.
+7. Mantener coherencia absoluta entre narración y estado.
+8. NO inventar información fuera del contexto recibido.
+9. NO bloquearse: si hay inconsistencia, resolverla de forma lógica.
+
+────────────────────────────
+
+SISTEMA DE MEMORIA IA (OBLIGATORIO)
+
+La MEMORIA IA debe contener un RESUMEN estructurado del pasado.
+
+Este resumen:
+- reemplaza el uso de la historia completa
+- contiene solo lo importante
+- permite coherencia sin sobrecargar la IA
+
+Debe incluir:
+- eventos clave del personaje
+- relaciones importantes
+- cambios relevantes del mundo
+- conflictos activos o resueltos
+
+REGLAS DE USO:
+- La IA SIEMPRE debe priorizar el RESUMEN
+- El historial reciente solo complementa
+- La IA NO necesita historia completa
+
+REGLAS DE ACTUALIZACIÓN:
+- NO actualizar en cada turno
+- actualizar solo cuando:
+  - ocurren eventos importantes
+  - hay saltos temporales
+  - se solicita modo profundo
+
+- mantener el resumen:
+  - coherente
+  - compacto
+  - sin crecimiento innecesario
+
+────────────────────────────
+
+MODO 1 — NARRACIÓN
+
+OBJETIVO:
+Generar narración coherente e inmersiva.
+
+ENTRADA:
+- MEMORIA IA (resumen)
+- ESTADO ACTUAL
+- HISTORIAL RECIENTE
+- ACCIÓN DEL JUGADOR
+
+INSTRUCCIONES:
+- Basarse en:
+  1. estado actual
+  2. memoria resumida
+  3. contexto reciente
+
+- NO depender de historia completa
+- NO repetir información innecesaria
+- NO generar JSON
+
+SALIDA:
+Texto narrativo únicamente
+
+────────────────────────────
+
+MODO 2 — ACTUALIZACIÓN DE ESTADO
+
+OBJETIVO:
+Actualizar solo lo afectado por el evento reciente.
+
+ENTRADA:
+- ESTADO ACTUAL
+- EVENTO RECIENTE
+
+INSTRUCCIONES:
+- detectar cambios reales
+- actualizar solo lo necesario
+- no reescribir todo
+
+SALIDA:
+JSON con cambios únicamente
+
+────────────────────────────
+
+MODO 3 — ACTUALIZACIÓN PROFUNDA
+
+Se activa solo cuando:
+- el usuario lo solicita
+- hay salto temporal grande
+- se requiere corrección global
+
+ENTRADA:
+- MEMORIA IA
+- ESTADO ACTUAL
+- EVENTO GENERAL
+
+INSTRUCCIONES:
+- revisar coherencia global
+- actualizar múltiples secciones
+- actualizar el RESUMEN si es necesario
+
+SALIDA:
+JSON estructurado
+
+────────────────────────────
+
+ROBUSTEZ
+
+Si falta información:
+- continuar sin fallar
+- inferir de forma conservadora
+- no inventar datos críticos
+
+────────────────────────────
+
+REGLA FINAL
+
+El sistema debe:
+- escalar con partidas largas
+- evitar fallos por exceso de contexto
+- mantener coherencia sin usar historia completa
+
+PRIORIDADES:
+1. Estabilidad
+2. Coherencia
+3. Precisión
+
+Está PROHIBIDO ignorar estas reglas.
+
+────────────────────────────
+
+ORDEN DE IMPLEMENTACIÓN OBLIGATORIO (PARA REPLIT)
+
+Seguir este orden EXACTO para evitar errores, inconsistencias o implementaciones incompletas:
+
+PASO 1 — HISTORIAL RECIENTE
+- Crear sistema en backend que almacene cada turno (usuario + narración)
+- Limitar automáticamente a los últimos 5–10 turnos
+- Asegurar que siempre exista aunque esté vacío
+
+PASO 2 — MEMORIA IA CON RESUMEN
+- Crear o reestructurar el objeto de memoria
+- Añadir campo obligatorio: "resumen"
+- Asegurar que sea persistente y estructurado
+- NO usar texto libre sin estructura
+
+PASO 3 — ESTADO ACTUAL (VERIFICACIÓN)
+- Verificar que el estado existente sea la fuente de verdad
+- No reemplazarlo
+- Asegurar que esté correctamente accesible para la IA
+
+PASO 4 — CONSTRUCCIÓN DEL CONTEXTO
+- Antes de cada llamada a la IA, construir:
+  - memoria (resumen)
+  - estado actual
+  - historial reciente limitado
+  - acción o evento
+- NO incluir historia completa bajo ninguna circunstancia
+
+PASO 5 — SEPARACIÓN DE LLAMADAS A LA IA
+- Implementar llamadas independientes:
+  - una para narración
+  - una para actualización
+- PROHIBIDO combinarlas
+
+PASO 6 — ACTUALIZACIÓN DE MEMORIA
+- Implementar actualización del resumen SOLO en:
+  - eventos importantes
+  - saltos temporales
+  - modo profundo
+- Evitar crecimiento innecesario
+
+PASO 7 — INTEGRACIÓN FINAL
+- Conectar todo el flujo:
+  narración → detección de evento → actualización de estado → (opcional) actualización de memoria
+- Verificar que el sistema funciona sin enviar historia completa
+
+PASO 8 — VALIDACIÓN
+- Confirmar que:
+  - no se envía historia completa a la IA
+  - el sistema funciona con contexto limitado
+  - no hay duplicación de lógica
+  - no se rompen funciones existentes
+
+Es OBLIGATORIO seguir este orden. No saltar pasos. No reordenar.

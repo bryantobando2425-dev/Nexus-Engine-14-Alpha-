@@ -1,0 +1,124 @@
+NEXUS ENGINE — Prompt de Correcciones v4.4
+Aplicar sobre el proyecto existente sin eliminar nada que funcione.
+
+PRINCIPIO FUNDAMENTAL — POBLADO AUTOMÁTICO
+Todo lo definido durante la creación de partida y todo lo narrado durante el juego debe registrarse automáticamente en las secciones correspondientes en tiempo real. Si la información ya existe (desde la creación, desde turnos anteriores, desde lo que el jugador definió), NUNCA debe aparecer vacío. La IA debe leer toda la información existente antes de cada turno y actualizar todas las secciones afectadas después de cada turno. Esto aplica sin excepción a: Personaje, NPCs, Facciones, Mundo, Inventario, Relaciones, Historia, Legado, Consecuencias, Geografía, Fauna, Economía, Política, Religión y todo lo demás.
+
+INPUT DE ACCIONES — FIX
+El área de input debe mostrar siempre todos los botones de acción disponibles según la edad: Hablar / Acción / Observar / Pensar. Actualmente solo aparece “Pensar”. Corregir para que todos estén visibles y funcionales, filtrados por edad (edades 0–6 solo sugerencias, 7+ con acceso progresivo a los botones).
+
+NARRACIÓN — CONTROLES DE TEXTO
+Añadir controles visibles sobre o bajo cada bloque de narración generado:
+Regenerar: vuelve a generar la última narración con los mismos parámetros pero resultado diferente, sin avanzar la historia. Útil si el resultado no convenció.
+Deshacer: vuelve al estado narrativo anterior al último turno, restaurando el texto previo y el estado del juego antes de esa acción.
+Estos dos controles deben estar siempre accesibles tras cada narración. Adicionalmente, en el Editor tab Ritmo, mantener el botón “Corregir continuidad” para inconsistencias detectadas en los últimos turnos.
+
+NARRACIÓN — TRANSICIÓN CON RELOJ
+Durante la generación de narración no debe verse ningún texto escribiéndose ni ningún indicador de “El narrador escribe…”. Mostrar únicamente una transición con reloj o calendario animado que avanza mostrando el tiempo transcurriendo en el juego (hora/día/mes/año), coherente y acorde con lo que la narración va a cubrir. Si la narración cubre una semana, el reloj avanza esa semana. Si cubre un día, avanza ese día. Cuando el texto esté listo, el reloj se detiene y la narración aparece completa con fade-in suave. El tiempo mostrado en el reloj debe actualizarse al terminar y reflejarse en el top bar.
+
+TOP BAR
+Mostrar siempre en la esquina superior izquierda: fecha completa en juego (día/mes/año con nombres de mes apropiados a la era), hora del día, localización actual específica, destino si existe o “—” si no. Todo actualizado automáticamente con cada narración. El tiempo avanza de forma coherente con lo narrado — si pasan tres días en la narración, la fecha avanza tres días.
+
+PERSONAJE — IDENTIDAD
+Fecha de nacimiento completa (día/mes/año). Lugar de nacimiento completo. Nombre del padre y madre visibles en Identidad. Datos importantes adicionales: religión, lengua materna, clase social de origen. La descripción del personaje debe ser dinámica por edad — nunca puede describir como adulto a un niño, ni como joven a un anciano. Si algo cambia en la narración (cabello, cicatrices, peso, vestimenta habitual, postura), la descripción se actualiza automáticamente en el siguiente turno. El portrait también debe regenerarse cuando haya cambios físicos significativos. La descripción debe escribirse en tiempo presente y acorde a la edad exacta actual.
+
+PERSONAJE — DESCRIPTORES
+Los descriptores deben ser coherentes con la historia vivida. Un personaje recién nacido o niño pequeño no puede tener “Conocido” o “Respetado” sin haberlo ganado narrativamente. Todos los descriptores parten del estado más bajo o neutro y solo suben cuando la narración lo justifica. La terminología debe ser apropiada a la era activa: para eras medievales usar Siervo, Villano, Burgués, Noble, Clérigo, etc. Los tooltips ⓘ de cada descriptor deben usar ejemplos y lenguaje de la era.
+
+PERSONAJE — INVENTARIO
+Reescribir completamente. Cada item debe mostrar: nombre, descripción narrativa, condición (Nuevo / Usado pero funcional / Deteriorado / Roto / Gastado / Fresco / Permanente), peso en unidades de la era (libras, arrobas, onzas, etc.), cantidad si es apilable. Indicador de capacidad de carga total vs peso actual portado, calculado según complexión y estado físico. Subsección “Vestimenta” separada y vinculada: prendas organizadas por capa (interior, exterior, calzado, cabeza, complementos), cada prenda afecta temperatura de supervivencia y percepción social. Subsección “Monedas”: nombre de moneda apropiado a la era, cantidad, referencia de poder adquisitivo contextual (ej. “3 dineros — suficiente para dos días de pan”). Todo editable desde el Editor.
+
+PERSONAJE — HABILIDADES
+Cada habilidad debe mostrar: nombre, nivel de dominio (Aprendiz / Competente / Maestro), botón ⓘ que abre descripción narrativa atmosférica de qué permite hacer esa habilidad en la era actual, cómo se adquiere y cómo mejora. Las limitaciones también tienen ⓘ explicando su efecto narrativo concreto. Añadir sección “Conocimientos” separada de habilidades: idiomas conocidos, áreas de conocimiento teórico, oficios aprendidos parcialmente. Todo se actualiza automáticamente cuando la narración introduce nuevas habilidades o conocimientos.
+
+PERSONAJE — RELACIONES
+La sección Familia debe poblarse automáticamente con todos los NPCs de rol familiar. Bug actual: aparece vacía aunque existen madre, padre y hermanos registrados — corregir. Cada entrada de relación debe mostrar: descriptor textual claro y extenso de la calidad de la relación con escala amplia (Amor incondicional / Amor profundo / Afecto genuino / Aprecio / Simpatía / Neutral / Indiferencia / Distancia / Desconfianza / Tensión / Rivalidad / Animadversión / Odio / Enemistad declarada / Enemistad mortal, y variantes específicas como Deuda emocional / Lealtad forzada / Miedo respetoso / Fascinación / Dependencia). Color e icono indicativo: verde para positiva, rojo para negativa, amarillo para tensa, gris para neutral, morado para compleja. Al tocar cualquier NPC abre directamente su ficha individual completa.
+
+PERSONAJE — HISTORIA
+Cada entrada del timeline debe mostrar día, mes y año completos (no solo el año). Indicador visual de período cerrado/pasado (icono o color atenuado) vs período activo actual. Entradas expandibles para ver la narrativa completa de ese momento.
+
+PERSONAJE — PSICOLOGÍA
+Los miedos y deseos definidos en la creación de partida deben aparecer desde el inicio, no vacíos. Bug actual: “Sin miedos conocidos” y “Sin deseos registrados” aunque fueron definidos. Corregir para que se carguen desde la creación. Añadir: clima emocional actual con indicador de color, log de voz interior, marcadores de trauma con efecto narrativo, arco de desarrollo del personaje generado periódicamente.
+
+PERSONAJE — LEGADO
+Legado debe mostrar: acciones de alto peso narrativo con turno + día/mes/año de cada una, objetos escondidos o dejados atrás, relaciones que podrían resonar en futuras partidas, momentos definitorios registrados automáticamente por la IA cuando ocurren.
+
+PERSONAJE — CONSECUENCIAS
+Las consecuencias pendientes no siempre deben tener un número de turnos fijo. Pueden estar: en turno concreto, en pendiente indefinido, o canceladas/resueltas según lo ocurrido en la narración. Cada consecuencia debe mostrar: descripción, fecha estimada o “Pendiente” o “Resuelta”, turno si aplica, y estado actual.
+
+NPCs — FICHA INDIVIDUAL COMPLETA
+La ficha de cada NPC debe tener los siguientes tabs completos:
+Tab Identidad: Portrait (silueta si no hay Replicate), nombre o “Desconocido”, fecha de nacimiento (si se sabe, si no “???”), lugar de origen (si se sabe, si no “???”), género, clase social, ocupación, última ubicación conocida, descripción física completa. Los campos desconocidos muestran “???” y se desbloquean narrativamente al conocer a la persona. Nunca rellenar automáticamente lo que el personaje no podría saber.
+Tab Atributos: Mismas Dimensiones Vitales y Perfil de Competencia que el personaje jugador. Visibilidad según familiaridad — desconocidos = “???”. Se actualizan automáticamente según lo narrado.
+Tab Descriptores: Misma estructura que el personaje. Desconocidos = “???”. Toggle para revelar todos si está activo Modo Dios.
+Tab Habilidades: Habilidades conocidas del NPC con nivel de dominio. Desconocidas = “???”. Se descubren narrativamente.
+Tab Relación: Escala amplia de carga emocional (misma escala del personaje). Momentos clave. Última actitud conocida. Historial de interacciones registrado automáticamente.
+Tab Inventario conocido: Solo items que el personaje ha visto o de los que tiene constancia. El resto = “???”.
+Tab Motivaciones: Objetivos y miedos conocidos. Motivaciones ocultas solo si fueron descubiertas o Modo Dios activo.
+Tab Historia conocida: Lo aprendido del NPC acumulado desde todos los turnos. El resto = “???”. La IA añade entradas automáticamente.
+Tab Estado: Vivo/Muerto/Desaparecido. Condiciones conocidas (enfermedad, herida, embarazo, estado emocional observable). Si muerto: cómo y cuándo. Si desaparecido: cuándo y circunstancias.
+Las facciones a las que pertenece este NPC se crean/registran automáticamente al descubrirse. Todo editable desde el Editor tab NPCs.
+
+FACCIONES — PANEL COMPLETO
+Separar en dos listas diferenciadas: Organizaciones Formales (reinos, naciones, señoríos, iglesias, gremios, órdenes, instituciones) y Grupos Informales (bandidos, mercenarios, sectas, pandillas, hermandades clandestinas). Cada lista con su propia sección visual.
+Las facciones mencionadas en la narración o en la política del mundo se registran automáticamente — nunca esperar a creación manual.
+Ficha individual de cada facción con tabs:
+Tab Identidad: Nombre, tipo, emblema, sede, líder conocido, tamaño estimado, año de fundación, eslogan, idioma o dialecto propio si aplica. Campos desconocidos = “???”.
+Tab Cultura y Valores: Valores centrales, normas internas, tabúes, rituales conocidos, jerarquía, trato a extranjeros, postura hacia otras facciones. Se llena desde la narración.
+Tab Religión y Lengua: Religión o creencias dominantes de la facción, idioma o lengua oficial, dialectos usados, prácticas religiosas propias, relación con la iglesia o institución religiosa del mundo. Se registra automáticamente desde la narración.
+Tab Clase Social y Estructura: Estratificación social interna, clases o castas dentro de la facción, movilidad social posible, derechos y restricciones por clase. Se registra desde la narración.
+Tab Política: Dividida en política interna (cómo funciona el poder), relaciones externas (con otras facciones), y standing del jugador con esta facción. Todo actualizado automáticamente.
+Tab Territorio: Zonas bajo influencia, recursos, rutas comerciales, fronteras disputadas. Se llena desde la narración.
+Tab Historia: Timeline de eventos importantes. Solo lo que el personaje conoce (el resto = “???”). Se llena automáticamente.
+Tab Miembros conocidos: Lista de NPCs con su rango. Expandible a su ficha individual.
+Tab Estado actual: Situación política/militar, conflictos, alianzas, amenazas. Se actualiza con cada narración.
+La reputación del jugador con cada facción se actualiza solo por la narración, nunca manualmente.
+
+MUNDO — TIEMPO
+Mostrar: año, era, estación, clima detallado (temperatura, precipitación, viento), hora del día, día de la semana si aplica a la era, fase lunar si aplica. Todo actualizado con cada narración.
+
+MUNDO — LOCALIZACIÓN
+Sistema jerárquico de lugares: ciudad principal con sus sub-lugares descubiertos anidados, campamento con sus zonas, bosque con nombre con sus puntos. Los lugares independientes sin nombre propio no tienen sub-lugares. Los lugares se añaden automáticamente al visitarse en la narración. Descripción sensorial completa del lugar actual: olores, sonidos, texturas, arquitectura, actividad, población estimada.
+
+MUNDO — POLÍTICA
+Dividir en tres secciones: Política Local (autoridades directas del lugar actual, normas locales, conflictos inmediatos), Política Global (lugares conocidos más rumores oídos, se añade al descubrirse narrativamente), Política de mi Facción/Reino (desbloqueable, bloqueada si el personaje no tiene facción propia). Este mismo sistema aplica a la ficha de política de cada facción. Sección separada para Grupos Informales con su estado y zona de influencia.
+
+MUNDO — RELIGIÓN
+Sección propia dentro del panel Mundo. Mostrar: religión o religiones dominantes del mundo conocido, instituciones religiosas conocidas (iglesias, templos, órdenes), sus territorios y jerarquías, prácticas y rituales conocidos, relación entre religión y poder político, festividades religiosas del calendario. Todo se registra automáticamente desde la narración. Se añaden entradas al descubrir nueva información religiosa. Editable manualmente.
+
+MUNDO — ECONOMÍA
+Economía diferente por facción y región. Cada área tiene su propia moneda o sistema de intercambio, precios de referencia, nivel de escasez o abundancia. Mostrar: moneda local actual, precios de referencia de bienes comunes, estado económico general del lugar actual, rutas comerciales conocidas, recursos escasos y abundantes. Se actualiza con la narración.
+
+MUNDO — EVENTOS, HISTORIA, GEOGRAFÍA, FAUNA
+Eventos Activos: conflictos, epidemias, fenómenos climáticos, festividades, guerras. Se registran automáticamente. Historia del Mundo: timeline de eventos históricos ocurridos, registrado automáticamente. Geografía: organizada por lugar, cada lugar tiene sus propios datos geográficos. Fauna y Flora: organizada por lugar, los animales y plantas son los del bioma y era correspondientes, no lista global genérica. Botón para añadir manualmente en todas las secciones. Nunca vacío si la información ya existe.
+
+MAPA — REDISEÑO COMPLETO
+Eliminar el estilo pixelado actual. Diseño atmosférico y profesional coherente con la era — aspecto de mapa medieval, antiguo o de época según la era de la partida. Leyenda expandida con más tipos de terreno. Posición actual específica referenciada geográficamente y por facción si aplica. Lugares visitados organizados jerárquicamente igual que en Localización. Terreno procedural desde seed única por partida. Niebla de guerra en áreas no exploradas. Puntos de interés con tooltip. El mapa se actualiza con cada narración. Sin emojis casuales — solo iconos SVG profesionales o símbolos tipográficos limpios en todo el proyecto.
+
+EDITOR — CONTENIDO (FIX)
+Tab Contenido: toggle maestro de modo explícito más todos los sub-toggles individuales: Violencia y gore, Lenguaje vulgar, Contenido sexual, Tortura y crueldad extrema, Consumo de sustancias detallado, Trauma psicológico explícito. Cada uno con descripción breve. Activar el maestro activa todos por defecto. Cada sub-toggle independiente. Estado persiste entre sesiones.
+
+EDITOR — RITMO
+Tab Ritmo: slider de intensidad (Mínima / Normal / Extensa / Épica), slider de ritmo narrativo (Frenético / Normal / Pausado / Contemplativo), botón “Regenerar última narración”, botón “Corregir continuidad”.
+
+EMOJIS — LIMPIAR TODO EL PROYECTO
+Eliminar todos los emojis casuales del proyecto. Reemplazar por iconos SVG profesionales del sistema de diseño o símbolos tipográficos limpios. Aplica a toda la UI sin excepción.
+
+GENERACIÓN DE IMÁGENES — PORTRAITS
+Portrait para el personaje jugador y para cada NPC generado con Replicate API usando la descripción física exacta (tez, cabello, ojos, complexión, rasgos distintivos, edad, ropa de la era). Portrait en tab Identidad de la ficha y en el strip lateral. Botón “Regenerar portrait” en ambos casos. Sin clave de Replicate: placeholder silueta SVG profesional, nunca romper la UI. Los portraits se guardan en el estado y nunca se regeneran solos al re-renderizar.
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa actual debe alterarse, perderse ni reiniciarse. Todas las correcciones se aplican sobre lo existente con coherencia narrativa total. Si alguna corrección requiere migrar datos a una nueva estructura, la migración se hace automáticamente sin pérdida.
+
+Continúa con la implementación íntegra de todas las correcciones de este prompt. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto. Cada corrección debe estar 100% integrada y funcionando antes de pasar a la siguiente. Sigue este orden de prioridad:
+	1.	Poblado automático de todas las secciones con datos existentes
+	2.	NPCs — ficha completa con todos sus tabs incluyendo Atributos, Descriptores y Habilidades propios
+	3.	Facciones — ficha completa con tabs de Religión y Lengua, Clase Social y Estructura, registro automático, grupos informales separados
+	4.	Personaje — todos los fixes (identidad, descriptores, inventario, habilidades, relaciones, historia, psicología, legado, consecuencias)
+	5.	Mundo — Religión como sección propia, política dividida, economía por región, geografía y fauna por lugar, jerarquía de localizaciones
+	6.	Mapa — rediseño completo atmosférico
+	7.	Editor — fix Contenido, verificar Ritmo, controles de narración (regenerar y deshacer)
+	8.	Emojis — limpiar todo el proyecto
+	9.	Top bar y reloj — fecha completa y tiempo coherente con la narración
+	10.	Input de acciones — todos los botones visibles
+Al terminar, entregar reporte detallado de exactamente qué se implementó en cada punto, qué quedó pendiente y por qué.​​​​​​​​​​​​​​​​

@@ -1,0 +1,96 @@
+NEXUS ENGINE — Prompt de Correcciones v4.9
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+⸻
+
+PROBLEMA 1 — FICHAS QUE NO SE ACTUALIZAN CON EL TIEMPO NARRATIVO
+La IA actualmente solo agrega información nueva encima de lo existente pero nunca reescribe los campos que han cambiado. Esta es la causa de fichas permanentemente incoherentes con la historia real.
+
+Regla fundamental permanente: en cada turno, la IA reescribe activamente TODOS los campos del juego sin excepción. No agregue encima. Reescribir. Sin excepciones. En todos los turnos. Para siempre. Esta regla se aplica también a cualquier sección o campo que se añada en el futuro.
+
+Esto incluye absolutamente TODO: personaje, NPCs, facciones, mundo, inventario, relaciones, consecuencias, legado, lugares, fecha actual (día/mes/año), tiempo narrativo y cualquier otro elemento del sistema. También aplica obligatoriamente a todas las acciones del juego, incluyendo “Avanzar etapa”.
+
+En cada turno la IA recalcula y reescribe obligatoriamente todos los campos afectados en base a la narración, el contexto completo de la partida y la memoria IA disponible:
+Para el personaje jugador: edad calculada desde su fecha de nacimiento y el año narrativo actual, fecha exacta actualizada (día/mes/año), descripción física coherente con esa edad exacta, atributos vitales, descriptores, habilidades con su nivel de dominio actual, estado de salud, clima emocional, deseos y miedos según lo vivido.
+Para cada NPC: edad calculada desde su fecha de nacimiento y el año narrativo actual, fecha actual coherente, descripción física acorde a esa edad real, estado vital, última ubicación conocida, estado de la relación con el jugador, condiciones de salud conocidas. Cada NPC se recalcula individualmente en cada turno, siempre.
+Para el mundo: estado político, económico, eventos activos o resueltos, estado de facciones, y cualquier otro sistema global.
+
+Cuando la narración cubre un salto temporal de cualquier magnitud, la IA calcula el tiempo exacto transcurrido y propaga ese cambio a absolutamente todas las fichas y sistemas. Ningún campo dependiente del tiempo puede quedar con un valor de una fecha anterior a la narrativa actual.
+
+Nunca puede quedar un campo sin actualizar si depende del paso del tiempo o de la narrativa. No es opcional. Es obligatorio siempre.
+
+⸻
+
+PROBLEMA 2 — PANEL “ACTUALIZAR ESTADO” INCOMPLETO E INCORRECTO
+El panel ya existe visualmente pero no cumple su función real. Reparar y completar el sistema para que funcione correctamente en todos los casos:
+
+Actualización General: llama a la IA con TODO el estado completo del juego sin excepción — TODAS las secciones, TODA la narrativa acumulada, TODA la memoria IA disponible, TODAS las fichas, TODAS las subsecciones, TODAS las funciones y cualquier elemento existente o futuro — y le obliga a reescribir activamente TODOS los campos del sistema exactamente igual que en un turno narrativo. Esto incluye fecha (día/mes/año), tiempo, personaje, NPCs, mundo y absolutamente todo.
+
+La IA no puede asumir que “todo está bien”. Debe analizar el estado completo, detectar incoherencias reales y corregirlas. Si algo no está actualizado correctamente, debe modificarlo obligatoriamente. No puede devolver falsos positivos.
+
+Debe existir un campo adicional dentro de este panel donde el jugador pueda escribir instrucciones manuales (ejemplo: modificar, añadir, eliminar, corregir cualquier elemento). La IA debe aplicar exactamente lo indicado de forma coherente con la partida.
+
+Si el jugador indica explícitamente que algo está mal y especifica qué debe cambiarse, la IA está obligada a ejecutar exactamente esa corrección. No puede ignorarlo, no puede responder que ya está correcto si no lo está, y no puede afirmar que aplicó cambios si no los ha aplicado realmente. Debe realizar la modificación de forma obligatoria y verificable en el estado del juego.
+
+Muestra indicador de progreso real. Al terminar muestra un resumen de qué cambió. Si falla, reintenta automáticamente — nunca muestra error sin intentarlo al menos 3 veces.
+
+Actualización por secciones: misma lógica pero aplicada únicamente a las secciones seleccionadas. Las casillas de verificación deben incluir todas las secciones existentes. Al pulsar Actualizar, ejecuta el proceso real sin errores.
+
+En todos los casos, este sistema debe comportarse exactamente igual que la actualización automática por turnos: reescritura completa, coherente y obligatoria.
+
+⸻
+
+PROBLEMA 3 — EDICIÓN MANUAL Y FUNCIÓN “SUGERIR” INCOMPLETA
+Esta funcionalidad debe existir en absolutamente TODO el sistema sin excepción.
+
+El jugador debe poder editar cualquier campo de cualquier sección del juego. Esto incluye todas las pantallas, paneles, subsecciones y cualquier elemento existente o futuro. No puede haber zonas sin edición manual.
+
+Al tocar o mantener presionado cualquier campo editable en cualquier panel (personaje, NPCs, facciones, mundo, inventario, relaciones, consecuencias, legado, lugares, o cualquier sección futura) aparece la opción de editarlo directamente.
+
+Junto a cada campo y también en cada sección completa debe existir el botón “Sugerir”. Este botón abre un input donde el jugador escribe en lenguaje natural lo que quiere cambiar. La IA debe aplicar absolutamente todo lo indicado de forma coherente, precisa y completa dentro del contexto de la partida.
+
+No puede ignorar instrucciones. No puede aplicar parcialmente. Debe ejecutar lo indicado correctamente.
+
+Los cambios manuales y sugeridos se marcan como editados manualmente. La IA narrativa respeta estas marcas y no sobreescribe esos campos en turnos posteriores salvo que la narración lo justifique explícitamente.
+
+⸻
+
+PROBLEMA 4 — CREACIÓN DINÁMICA DE SECCIONES Y CAMPOS
+El sistema debe permitir al jugador no solo editar, sino también crear y expandir la estructura del juego:
+
+El jugador puede crear nuevas secciones, subsecciones, campos o estructuras completas en cualquier parte del sistema. Esto debe poder hacerse tanto manualmente como mediante la función “Sugerir”.
+
+La IA debe integrar estas nuevas estructuras de forma coherente con el resto del sistema, incluyendo su uso en narrativa, actualización automática, panel “Actualizar Estado” y futuras iteraciones.
+
+Las nuevas secciones creadas pasan a formar parte permanente del estado del juego y deben ser tratadas exactamente igual que cualquier sección nativa en todos los sistemas (reescritura por turno, edición, sugerencias, etc.).
+
+⸻
+
+REGLA GLOBAL PERMANENTE
+Todo lo descrito en este mensaje son comportamientos permanentes del sistema, no correcciones puntuales. Se aplica en cada turno, siempre, para todas las secciones existentes y futuras, independientemente de la era, época o tipo de partida.
+
+⸻
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+⸻
+
+EXPORTAR E IMPORTAR PARTIDA — SISTEMA COMPLETO (YA IMPLEMENTADO)
+El sistema de exportar e importar partida ya funciona correctamente. No modificar su funcionamiento actual. Solo se permiten mejoras o añadidos sin romper lo existente. Debe seguir permitiendo descargar el archivo JSON completo de la partida y subirlo posteriormente restaurando todos los datos sin errores.
+
+⸻
+
+ORDEN DE PRIORIDAD:
+•	Corrección del sistema de actualización — la IA reescribe campos, no añade encima
+•	Panel de reparación “Actualizar Estado” para que funcione realmente
+•	Implementar edición manual con botón Sugerir en toda la UI
+•	Creación dinámica de secciones y campos
+•	Mantener sistema de exportar/importar sin romper funcionamiento actual
+
+⸻
+
+INSTRUCCIÓN DE IMPLEMENTACIÓN PROGRESIVA
+Si los créditos o el contexto disponible no permiten completar todo en una sola sesión, implementa en el orden estricto de prioridad y detente limpiamente al agotar recursos. Nunca dejes un archivo en estado roto. Es preferible implementar menos puntos pero que todo lo implementado funcione correctamente. En la siguiente sesión continúa exactamente donde se detuvo.
+
+Al terminar: reporte detallado de qué se implementó en cada punto, qué quedó pendiente y por qué. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto.

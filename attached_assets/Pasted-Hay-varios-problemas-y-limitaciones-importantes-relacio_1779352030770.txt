@@ -1,0 +1,84 @@
+Hay varios problemas y limitaciones importantes relacionados con las secciones personalizadas y el manejo general de información del sistema.
+
+1. Integración persistente de información inicial:
+La información definida durante la creación de la partida debe registrarse automáticamente dentro del mundo y sus secciones correspondientes desde el inicio.
+
+Sin embargo, esto no significa que toda esa información deba aparecer inmediatamente en la narrativa. La IA debe poder utilizarla cuando sea lógico, coherente y relevante dentro del desarrollo de la historia.
+
+Lo importante es que:
+- La información quede registrada correctamente
+- Permanezca persistente
+- Pueda reutilizarse posteriormente
+- Influya en el mundo de forma coherente con el contexto narrativo
+
+Esto también debe aplicarse a nuevas secciones creadas automáticamente por la IA si detecta que cierta información necesita organización propia. Estas secciones deben funcionar igual que las creadas manualmente por el usuario y poder editarse normalmente.
+
+2. Problema con la función “Sugerir”:
+La función “Sugerir” dentro de las secciones personalizadas actualmente no funciona correctamente. Al solicitar sugerencias o contenido, el sistema no añade información ni realiza ninguna acción.
+
+3. Problema con los tipos de campos:
+Actualmente todos los tipos de campos personalizados funcionan prácticamente igual, aunque deberían comportarse de manera diferente.
+
+Los tipos:
+- text
+- number
+- list
+- state
+- progress
+- date
+- tags
+
+deberían tener lógica, comportamiento y representación propia tanto para el sistema como para la IA.
+
+Por ejemplo:
+- progress debería manejar progreso real y barras dinámicas
+- state debería manejar estados reconocibles
+- date debería funcionar con lógica temporal
+- tags debería categorizar contenido
+- list debería estructurar información correctamente
+
+Actualmente todos funcionan como simples campos de texto sin diferencias reales.
+
+4. Problemas de edición y administración:
+Actualmente, para corregir errores o modificar ciertas estructuras dentro de una sección personalizada, muchas veces es necesario eliminar completamente la sección. Esto es muy limitado y poco práctico.
+
+El sistema necesita mejores herramientas de edición, actualización, reorganización y modificación de campos sin obligar a borrar contenido completo.
+
+5. Problemas de formato y visualización:
+El sistema actualmente no maneja correctamente formatos de texto.
+
+El contenido aparece completamente pegado, sin saltos de línea reales ni buena separación visual, lo que dificulta mucho la lectura y organización de información extensa.
+
+También falta soporte adecuado para:
+- negritas
+- cursivas
+- separadores
+- listas
+- estructuras visuales
+- tablas
+- bloques organizados
+- colores
+- barras de progreso
+- formatos avanzados
+
+Esto no solo afecta a las secciones personalizadas, sino también a:
+- narrativa
+- memoria IA
+- campos del sistema
+- información estructurada
+- registros internos
+
+6. Expansión general del sistema de secciones personalizadas:
+Las secciones personalizadas actualmente se sienten demasiado limitadas para todo el potencial que deberían tener.
+
+El sistema necesita evolucionar hacia herramientas mucho más avanzadas y dinámicas, permitiendo:
+- mejor organización estructural
+- sistemas visuales más claros
+- formatos complejos
+- componentes dinámicos
+- mejor administración de información extensa
+- herramientas más flexibles para narrativa y worldbuilding
+- mayor interacción entre la IA y las estructuras creadas
+- sistemas persistentes y escalables sin afectar el rendimiento general
+
+Todo esto debe funcionar correctamente en partidas nuevas, existentes, importadas o cualquier otro tipo de sesión.

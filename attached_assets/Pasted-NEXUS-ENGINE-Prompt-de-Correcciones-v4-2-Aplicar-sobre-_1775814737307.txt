@@ -1,0 +1,56 @@
+NEXUS ENGINE — Prompt de Correcciones v4.2
+Aplicar sobre el proyecto existente sin eliminar nada que funcione.
+
+MAPA — FIX CRÍTICO
+El canvas del mapa está renderizando negro. El problema es probablemente que el contexto 2D se intenta usar antes de que el elemento canvas esté montado en el DOM, o hay un error silencioso en la generación procedural. Solución: asegurarse de que el canvas se inicializa dentro de un useEffect con dependencia en el ref del canvas, verificar que useRef y el elemento canvas están correctamente enlazados antes de llamar getContext(‘2d’), añadir console.error explícito si getContext devuelve null, y forzar un re-render del canvas cuando el panel del mapa se abre. El mapa debe renderizar terreno procedural siempre — nunca negro.
+
+GENERACIÓN DE IMÁGENES — PORTRAITS
+Implementar generación de portrait para el personaje jugador y para cada NPC. El portrait se genera con Replicate API usando la descripción física exacta del personaje (tez, cabello, ojos, complexión, rasgos distintivos, edad, ropa de la era). El portrait del personaje se muestra en el tab Identidad de la ficha y en el strip lateral. El portrait de cada NPC se muestra en su ficha individual. Añadir botón “Regenerar portrait” en ambos casos. Si no hay clave de Replicate, mostrar placeholder con icono de silueta, nunca romper la UI. Los portraits se guardan en el estado y nunca se regeneran solos al re-renderizar.
+
+NARRACIÓN — TRANSICIÓN CON RELOJ
+La narración NO debe mostrarse mientras se escribe (eliminar el efecto de streaming visible). La IA genera el texto completo internamente. Mientras genera, mostrar una pantalla de transición con un reloj o calendario animado que avanza mostrando el tiempo que transcurre en la historia acorde a lo que se está narrando. Cuando el texto esté listo, el reloj se detiene y la narración aparece completa con un fade-in suave.
+
+TOP BAR
+En la esquina superior izquierda mostrar siempre en formato compacto: día, mes y año en juego (ej. “14 de septiembre, 1245”). Debajo: localización actual. Debajo: Destino (si no hay ninguno activo mostrar “—”). Añadir también hora del día si hay espacio. Todo en tiempo real actualizado con cada narración.
+
+INVENTARIO — EXPANSIÓN
+El inventario debe ser más completo y realista. Cada item debe mostrar: nombre, descripción, condición, peso estimado (en unidades apropiadas a la era: libras, arrobas, onzas, etc.), y si aplica: cantidad (para items apilables como granos, monedas, flechas). Añadir indicador de capacidad de carga total del personaje vs peso actual cargado, calculado según la complexión y estado físico del personaje. Los items de vestimenta deben estar en una subsección separada pero vinculada: “Vestimenta” aparece como su propia sección dentro del inventario, con las prendas organizadas por capa (interior, exterior, calzado, cabeza, complementos). Cada prenda afecta la temperatura de supervivencia y la percepción social. La subsección Monedas debe mostrar el nombre de la moneda apropiado a la era, el valor, y una referencia de poder adquisitivo contextual (ej. “3 dineros — suficiente para dos días de pan”). Todo esto editable desde el Editor.
+
+HABILIDADES — EXPANSIÓN
+Cada habilidad debe tener botón ⓘ que al tocarlo abre una descripción narrativa atmosférica explicando qué permite hacer esa habilidad en la era actual, cómo se adquiere, y cómo puede mejorar. Añadir nivel de dominio visible junto al nombre de cada habilidad usando el sistema de Grado de Autonomía: Nulo / Aprendiz / Competente / Maestro. Las limitaciones también deben tener ⓘ explicando su efecto narrativo concreto. Añadir campo “Conocimientos” separado de habilidades: idiomas conocidos, áreas de conocimiento teórico, oficios aprendidos de forma parcial.
+
+RELACIONES — CLARIDAD Y EXPANSIÓN
+En el tab Relaciones del personaje, la sección de Familia debe poblarse automáticamente con los NPCs que tienen rol familiar (madre, padre, hermanos, etc.) — actualmente aparece vacía aunque existen NPCs familiares registrados, esto es un bug. Cada entrada de relación debe mostrar claramente el tipo de carga emocional con color e icono: verde = positiva, rojo = negativa, amarillo = tensa, gris = neutral. Añadir descriptor textual de la relación (ej. “Amor profundo”, “Desconfianza mutua”, “Deuda emocional”). Al tocar cualquier NPC en la lista de relaciones debe abrir directamente su ficha individual completa.
+
+NPCs — FICHA INDIVIDUAL COMPLETA
+Al tocar un NPC debe abrirse su ficha individual como pantalla completa con los siguientes tabs: Identidad (portrait, nombre, edad estimada, género, clase social, ocupación, última ubicación, descripción física), Descriptores (misma estructura que el personaje, desconocidos = “???”), Relación (tipo, carga emocional, momentos clave, última actitud, historial de interacciones), Inventario conocido (solo items vistos, el resto = “???”), Motivaciones (objetivos y miedos conocidos, motivaciones ocultas solo en Modo Dios), Historia conocida (lo aprendido del NPC, el resto = “???”), Estado (vivo/muerto/desaparecido con circunstancias). Actualmente solo muestra un dropdown básico — esto debe convertirse en ficha completa.
+
+FACCIONES — FICHA INDIVIDUAL COMPLETA
+Al tocar una facción debe abrirse su ficha individual con tabs: Identidad (nombre, tipo, emblema, sede, líder conocido, tamaño, año de fundación, eslogan), Cultura y Valores (valores, normas, tabúes, rituales, jerarquía, trato a extranjeros), Relaciones (standing del jugador y relaciones con otras facciones), Miembros conocidos (lista de NPCs con su rango), Historia (timeline de eventos, solo lo conocido), Territorio (zonas, recursos, rutas), Estado actual (situación política/militar). El standing no debe ser manual con botones +10/-10 — debe cambiar automáticamente según la narración de la IA.
+
+HISTORIA DEL PERSONAJE — MEJORA
+Cada entrada del timeline debe mostrar día, mes y año (no solo el año). Añadir indicador visual de si ese período está cerrado/pasado (ícono de candado o color atenuado) o es el período activo actual. Las entradas deben ser expandibles para ver la narrativa completa de ese momento.
+
+SALUD — EXPANSIÓN
+Añadir sistema de partes del cuerpo: cabeza, torso, brazo izquierdo, brazo derecho, pierna izquierda, pierna derecho. Cada parte puede tener estado propio (Sano / Magullado / Herido / Fracturado / Inutilizado). Las lesiones se asignan a partes específicas del cuerpo según lo narrado. Mantener las barras de porcentaje actuales pero complementarlas con este sistema. Traducir todos los labels al español: SALUD, ENERGÍA, HAMBRE, MORAL, SALUD MENTAL.
+
+PANEL MUNDO — SUBSECCIONES COMPLETAS
+El panel Mundo debe tener la misma estructura de tabs que el Personaje, no ser una lista simple. Tabs: Tiempo y Lugar (año, era, estación, clima, hora), Localización (descripción sensorial completa del lugar actual), Política (clima político, facciones en conflicto, autoridades), Economía (estado económico local, recursos, precios de referencia), Eventos Activos (conflictos, epidemias, fenómenos, festividades), Historia del Mundo (timeline de eventos históricos ocurridos), Geografía (territorio, biomas, rutas, accidentes geográficos), Fauna y Flora (especies locales, comportamientos, peligros). Todo editable desde el Editor tab Mundo.
+
+EDITOR — EXPANSIÓN COMPLETA
+El Editor actualmente solo muestra voz narrativa, modo explícito y perspectivas externas. Debe tener 5 tabs completos: Narrativa (lo que ya existe más: sliders de intensidad de narración Mínima/Normal/Extensa/Épica, slider de ritmo Frenético/Normal/Pausado/Contemplativo, botón Regenerar última narración, botón Corregir continuidad), Mundo (editar todos los campos del panel Mundo), Personaje (editar todos los campos de la ficha del personaje), NPCs (editar cualquier campo de cualquier NPC, crear NPC nuevo, regenerar portrait), Legado (ver y editar cola de consecuencias, ecos activos).
+
+ATRIBUTOS — VERIFICACIÓN DE ERA
+El sistema de Estatus de Casta/Clase y todos los descriptores de atributos deben reflejar la terminología apropiada a la era actual. Para la Baja Edad Media (era actual de la partida): usar términos como Siervo, Villano, Burgués, Noble, Clérigo en lugar de términos genéricos. Verificar que las descripciones del tooltip ⓘ de cada atributo también usan ejemplos y lenguaje apropiados a la era. Este ajuste debe aplicarse dinámicamente según la era de cada partida.
+
+DESCRIPCIÓN DEL PERSONAJE — DINÁMICA POR EDAD
+La descripción en el tab Identidad del personaje no debe ser estática desde la creación. Debe actualizarse dinámicamente según la edad actual. Un personaje de 1 año no puede tener la descripción de un adulto curtido. La IA debe regenerar la descripción cada vez que la edad cambia significativamente (saltos de etapa vital). El botón de regenerar portrait debe también regenerar la descripción.
+
+MODO EXPLÍCITO — FIX
+Los sub-toggles del modo explícito aparecen como checkboxes vacíos aunque el toggle maestro está activado. Corregir: activar el toggle maestro debe marcar todos los sub-toggles por defecto. Cada sub-toggle debe guardar su estado independientemente. El estado debe persistir entre sesiones.
+
+MEMORIA IA — CAMPO FALTANTE
+Añadir campo “Instrucciones permanentes globales” en el panel Memoria IA. Este campo es texto libre sin límite de caracteres. La IA lo lee en TODAS las partidas siempre, no solo en la actual. Debe estar claramente separado visualmente de las “Reglas de esta partida” que son solo para la partida activa.
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa actual debe alterarse. Todas estas correcciones se aplican sobre lo existente con coherencia narrativa. Los NPCs actuales (Sancha, Domingo, Mencia), el inventario, la historia, los atributos y las consecuencias pendientes se mantienen exactamente como están y se integran en las nuevas estructuras sin modificar su contenido.​​​​​​​​​​​​​​​​

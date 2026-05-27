@@ -1,0 +1,93 @@
+NEXUS ENGINE — Prompt de Correcciones v4.7
+Aplicar sobre el proyecto existente sin eliminar nada que funcione. Preservar todos los datos de la partida activa.
+
+PROBLEMA RAÍZ — ARQUITECTURA DE ESTADO (PRIORIDAD MÁXIMA)
+El problema central es que la IA narrativa escribe actualizaciones en el JSON pero múltiples secciones del frontend no las leen ni las renderizan. Verificar y reparar el flujo completo: qué se escribe tras cada turno y qué lee la UI para cada panel. Este fallo afecta principalmente a Personas (NPCs), Facciones, Relaciones y el Mapa. Sin este flujo funcionando, ninguna corrección de UI tiene efecto.
+
+PRINCIPIO FUNDAMENTAL — POBLADO AUTOMÁTICO TOTAL
+La IA narrativa debe actualizar ABSOLUTAMENTE TODO de forma autónoma tras cada turno sin intervención manual. Lee el estado completo antes de narrar y escribe todas las actualizaciones después. Si algo no cambió, se mantiene igual. Nunca dejar vacío algo que ya tenía información.
+Verificar que las siguientes secciones que ya funcionan parcialmente se mantengan actualizándose correctamente en cada turno: Legado y Consecuencias, Historia del Personaje, Psicología, Mundo — Tiempo, Mundo — Eventos, Mundo — Historia, Mundo — Política Local y Global, Mundo — Religión.
+
+COHERENCIA NARRATIVA — CONSECUENCIAS Y ESTADO DEL MUNDO
+Las consecuencias pendientes y eventos programados deben evaluarse en cada turno contra lo que realmente ocurrió en la narración. No son contadores mecánicos que decrementan ciegamente turno a turno.
+Si el jugador avanzó tiempo, la IA resuelve automáticamente todas las consecuencias cuyo momento ya pasó de forma coherente con el contexto. Si ocurrieron eventos que anulan una consecuencia, cancelarla con explicación. Si un NPC cambió de estado, cancelar o modificar todas las consecuencias vinculadas. Si el personaje adquirió nuevas capacidades o recursos, reevaluar si las consecuencias negativas siguen siendo inevitables.
+Cada consecuencia muestra su estado: Activa / Resuelta / Cancelada / Modificada con motivo.
+
+BOTONES DE ACCIÓN — FUNCIONALIDAD DIFERENCIADA
+Los botones ya son visibles y legibles. El problema actual es que todos funcionan de la misma manera, lo que los hace inútiles como herramientas diferenciadas. Cada botón debe tener un comportamiento narrativo específico y distinto:
+
+Libre: el jugador escribe su propia acción en texto libre sin restricciones
+Hablar: abre un modo de diálogo donde el jugador elige con quién hablar y qué decir o preguntar; la IA narra la conversación y sus consecuencias
+Acción: el jugador ejecuta una acción física concreta en el mundo (moverse, coger algo, pelear, construir, etc.); la IA narra el resultado con sus consecuencias físicas y narrativas
+Observar: el personaje examina el entorno, un objeto, una persona o una situación; la IA revela información sensorial y detalles relevantes sin avanzar el tiempo significativamente
+Pensar: el personaje reflexiona internamente; la IA genera un monólogo interior coherente con la psicología, miedos, deseos y contexto actual del personaje
+Avanzar etapa: salta un período de tiempo significativo; va siempre al final de la fila de botones, después de Pensar
+
+El orden de los botones debe ser: Libre / Hablar / Acción / Observar / Pensar / Avanzar etapa.
+
+PERSONAJE — IDENTIDAD
+La descripción actual sigue mostrando el placeholder interno en lugar de la descripción real. Este texto nunca debe ser visible al jugador. La IA debe generar y mantener actualizada una descripción en tiempo presente, coherente con la edad exacta del personaje y los cambios físicos narrados. Un niño de 9 años se describe como niño de 9 años con los rasgos y condición física que corresponden a su vida hasta ese momento.
+
+PERSONAJE — DESCRIPTORES
+El descriptor de Conocimiento no debe asignar niveles que no correspondan a lo vivido. Un niño campesino que apenas está aprendiendo a leer con el cura local no es "Letrado" — su descriptor debe reflejar su nivel real según la narración. Todos los descriptores parten del estado más bajo y suben solo cuando la narración lo justifica. La terminología debe ser apropiada a la era activa de la partida, no genérica.
+
+PERSONAJE — INVENTARIO
+La pantalla individual de cada ítem ya abre al tocarlo, pero está incompleta. Debe mostrar además de nombre y descripción: peso en unidades apropiadas a la era y región (nunca "unidades" genéricas), condición detallada, origen o procedencia si se conoce, valor de intercambio aproximado en la moneda de la era. La subsección de Vestimenta debe estar separada del inventario general, organizada por capas (interior, exterior, calzado, cabeza, complementos), y cada prenda debe indicar su efecto en temperatura de supervivencia y percepción social. La subsección Monedas debe usar el nombre real de la moneda correspondiente a la era y región de la partida (nunca "Monedas" genérico), con referencia de poder adquisitivo contextual.
+
+PERSONAJE — HABILIDADES
+Añadir botón ⓘ individual a cada habilidad que abra una descripción narrativa de qué permite hacer esa habilidad en la era activa, cómo se adquiere y cómo mejora. Añadir también ⓘ general para toda la sección. El ritmo de progresión debe ser coherente con la edad y la experiencia real del personaje — un niño de 9 años con acceso limitado a práctica no puede tener niveles altos en habilidades complejas sin justificación narrativa sólida. La escala de 5 niveles (Ignorante / Aprendiz / Competente / Experto / Maestro) debe aplicarse con criterio realista.
+
+PERSONAJE — RELACIONES
+La sección Familia debe poblarse automáticamente con todos los NPCs de rol familiar. La sección Conocidos debe incluir a todos los NPCs con los que el personaje ha interactuado narrativamente. Cada entrada muestra descriptor textual de la relación con escala amplia y color/icono indicativo claramente visible: verde para positiva, rojo para negativa, amarillo para tensa, gris para neutral, morado para compleja. Al tocar cualquier NPC en Relaciones se abre directamente su ficha individual del panel Personas — ambos paneles sincronizados.
+
+PERSONAJE — LEGADO
+Verificar que los Momentos Definitorios se registran automáticamente. No debe quedar el placeholder vacío cuando hay momentos de alto impacto narrativo claramente ocurridos. La IA debe identificar y registrar estos momentos sin esperar instrucción manual.
+
+PERSONAS (NPCs) — FICHA INDIVIDUAL COMPLETA
+Este es el error más grave activo: el panel Personas aparece completamente vacío ("Ningún personaje conocido aún") aunque la historia lleva varios años narrados con familia y personajes secundarios plenamente establecidos. La IA escribe los datos pero el frontend no los renderiza. Reparar el pipeline completo de escritura → lectura → renderizado del panel Personas.
+Una vez reparado, todos los NPCs conocidos desde la creación y los introducidos durante la narración deben aparecer automáticamente. Los NPCs familiares deben tener sus fichas pre-pobladas con la información que el personaje lógicamente conocería.
+La visibilidad de información en cada ficha depende del contexto: relación con el NPC, capacidades del personaje, acciones tomadas en el juego (investigación, sobornos, espionaje) y nivel de confianza. Solo muestran "???" los campos genuinamente desconocidos dado ese contexto.
+9 tabs por NPC: Identidad / Atributos / Descriptores / Habilidades (escala de 5 niveles) / Relación (escala amplia de carga emocional, momentos clave, historial automático) / Inventario conocido / Motivaciones / Historia conocida / Estado (vivo/muerto/desaparecido con condiciones conocidas).
+
+FACCIONES — PANEL COMPLETO
+El panel muestra cero facciones. Las facciones deben generarse y pre-poblarse automáticamente desde la creación de la partida basándose en la era, región y contexto de la partida — nunca las mismas facciones fijas, siempre coherentes con lo que corresponde al mundo específico que se está jugando. Las facciones que aparecen en la narración también deben registrarse automáticamente.
+Separar en dos listas: Organizaciones Formales y Grupos Informales. Formulario de creación manual completo, no mínimo.
+9 tabs por facción: Identidad / Cultura y Valores / Religión y Lengua / Clase Social y Estructura / Política (interna + externa + standing del jugador) / Territorio / Historia / Miembros conocidos / Estado actual. La reputación del jugador se actualiza solo por narración.
+
+MUNDO — LOCALIZACIÓN
+La vista de Localización debe mostrar información en capas jerárquicas: en qué facción/reino/territorio se encuentra el personaje, en qué ciudad o región dentro de ese territorio, y en qué sub-lugar específico está el personaje en este momento (la casa, la parroquia, el mercado, etc.). Todo esto complementado con el Mapa y con las fichas de Facciones correspondientes.
+Cada lugar conocido debe tener su propia ficha individual. Al tocar el nombre de un lugar en Localización o en el Mapa se abre esa ficha con campos específicos del lugar: descripción sensorial completa, facción que lo controla, historia del lugar, fauna y geografía local, personajes asociados, eventos ocurridos allí. Esta ficha se complementa con las secciones de Facciones, Fauna, Geografía y Personas.
+Los lugares explorados deben sincronizarse bidireccionalmente con el Mapa. Un lugar no debe aparecer duplicado en la lista de lugares visitados — cada lugar aparece una sola vez.
+
+MUNDO — POLÍTICA
+Mantener las secciones Local y Global que ya funcionan. Añadir la tercera sección faltante: Política de mi Facción/Reino, desbloqueable cuando el personaje pertenece a una facción. Añadir también sección separada para Grupos Informales con su estado y zona de influencia.
+
+MUNDO — ECONOMÍA
+La moneda debe mostrar el nombre real correspondiente a la era y región de la partida, nunca "Monedas" genérico. Añadir precios de referencia de bienes comunes, estado económico detallado del lugar actual, rutas comerciales conocidas, recursos escasos y abundantes de la región.
+
+MUNDO — GEOGRAFÍA
+La Geografía debe estar organizada por lugar específico. Por defecto muestra la geografía del lugar donde está el personaje actualmente. Al tocar el nombre de cualquier lugar conocido se abre su geografía específica. Añadir buscador para navegar entre lugares. El contenido debe ser estructurado y completo — características del terreno, clima típico, recursos naturales, accidentes geográficos relevantes — coherente con el bioma, era y región correspondientes al lugar. Al descubrir nuevos lugares, su geografía se guarda automáticamente.
+
+MUNDO — FAUNA
+La Fauna debe estar organizada por lugar específico, igual que la Geografía. Por defecto muestra la fauna y flora del lugar actual. Al tocar el nombre de cualquier lugar conocido se abre su fauna específica. Añadir buscador. El contenido debe incluir la fauna típica del bioma, clima y era del lugar — no solo los animales domésticos del personaje. Al descubrir nuevos lugares, su fauna se guarda automáticamente. Cada lugar acumula su propia fauna independientemente de los demás.
+
+MAPA — CORRECCIONES
+El geocoding falla: marca posiciones incorrectas que no corresponden al lugar narrado. El sistema debe obtener las coordenadas geográficas reales del lugar mencionado en la narración y centrar el mapa en esas coordenadas con el marcador de posición actual correctamente ubicado.
+La lista de lugares visitados no debe mostrar duplicados — cada lugar aparece una sola vez. Al tocar un lugar en la lista del Mapa se abre su ficha individual (igual que en Localización).
+El estilo visual del mapa debe adaptarse a la era activa de la partida — no hay un estilo único fijo.
+
+PARTIDA EXISTENTE — INTEGRIDAD TOTAL
+Ningún dato de la partida activa debe alterarse, perderse ni reiniciarse. Migraciones automáticas sin pérdida.
+
+ORDEN DE PRIORIDAD:
+
+Reparar pipeline frontend — Personas (NPCs) no renderiza aunque la IA escribe los datos
+Facciones — pre-poblar por contexto de partida, registrar automáticamente las de la narración
+Mapa — geocoding correcto, sin duplicados, marcador en coordenadas reales
+Localización — vista jerárquica por capas, fichas individuales de lugares, sin duplicados
+Botones de acción — comportamiento narrativo diferenciado por tipo, orden: Libre / Hablar / Acción / Observar / Pensar / Avanzar etapa
+Personaje — descripción real en lugar de placeholder, descriptores coherentes con edad y narración, inventario con campos completos, habilidades con ⓘ individual y general, relaciones con colores y link a ficha NPC, legado con momentos definitorios automáticos
+Mundo — Política con tercera sección, Economía con moneda real, Geografía y Fauna por lugar con buscador y fichas individuales
+Verificar que se mantienen funcionando: Legado/Consecuencias, Historia del Personaje, Psicología, Tiempo, Eventos, Historia del Mundo, Política Local/Global, Religión
+
+Al terminar: reporte detallado de qué se implementó en cada punto, qué quedó pendiente y por qué. Es ESTRICTAMENTE PROHIBIDO resumir, recortar o ignorar cualquier punto.

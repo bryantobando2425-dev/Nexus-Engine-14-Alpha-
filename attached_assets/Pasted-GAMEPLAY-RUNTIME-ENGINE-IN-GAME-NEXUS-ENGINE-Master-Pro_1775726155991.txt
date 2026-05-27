@@ -1,0 +1,70 @@
+GAMEPLAY & RUNTIME ENGINE (IN-GAME)
+NEXUS ENGINE — Master Prompt v4.2 (Sección: Ejecución de Partida)
+Update Document — Aplicar sobre la versión existente sin eliminar nada
+AGENT INSTRUCTIONS — READ FIRST
+Apply every section of this document as an update to the existing project. Do not delete, reset, or rebuild anything that is already working. Implement what is new, fix what is broken, and expand what is incomplete. When you finish or reach a stopping point, provide a complete report of: (1) what was fully implemented, (2) what was partially done and what remains, (3) anything that could not be implemented and why. Then wait for instructions before continuing.
+TECH STACK
+• Frontend: React + TypeScript + Vite
+• Styling: Tailwind CSS
+• Database: Supabase (PostgreSQL) — cross-run persistence
+• AI Narration: Anthropic Claude API (claude-sonnet-4-20250514)
+• Image Generation: Replicate API (realistic/cinematic, never anime or pixel art)
+• Map: Procedural canvas-based map — MUST render terrain, current position (amber dot), explored areas and points of interest
+• PWA: Vite PWA plugin
+• State: Zustand with persist middleware (localStorage)
+• Routing: React Router v6
+• Auth: Supabase Auth
+STATE PERSISTENCE — CRITICAL
+Zustand store with persist middleware writing to localStorage on EVERY state change. Opening any panel, section, or overlay during an active run must NEVER reset or clear the narrative history. Run state survives: panel switching, screen navigation, page refresh, browser close/reopen. Full run history persisted: all narration turns, events, character state, world state. On app load: check localStorage for active run → show “Continuar partida” if found. NEVER use React useState for active run data — only Zustand + localStorage. Manual save button always available during a run: saves everything explicitly to Supabase as backup.
+IMPLICIT ATTRIBUTE SYSTEM (SISTEMA DE ATRIBUTOS REALISTAS) — CRÍTICO
+Los atributos no son números, sino Descriptores de Estado que afectan mecánicamente la narrativa y las posibilidades de éxito. Cada atributo tiene un icono ℹ️ que, al activarse, abre un Tutorial Narrativo largo y atmosférico explicando cómo ese estado afecta tu vida en la era actual.
+1. Dimensiones Vitales (Estado Dinámico):
+• Integridad Física ℹ️: Impecable | Magullado | Lesionado | Lisiado | Agonizante. (Define movilidad y capacidad de esfuerzo físico).
+• Reserva Metabólica ℹ️: Saciado | Nutrido | Débil | Famélico | Desfallecido. (Afecta resistencia y claridad mental a largo plazo).
+• Carga Cognitiva ℹ️: Alerta | Nublado | Somnoliento | Agotado | Delirante. (Afecta la percepción de detalles y precisión de acciones).
+• Umbral de Estrés ℹ️: Imperturbable | Tenso | Ansioso | En Pánico | Colapsado. (Determina si el personaje actúa con lógica o por puro instinto).
+2. Perfil de Competencia (Maestría y Social):
+• Aptitud Motriz ℹ️: Torpe | Funcional | Atlético | Excepcional. (Fuerza, agilidad y coordinación general).
+• Intelecto Aplicado ℹ️: Limitado | Promedio | Sagaz | Genio. (Capacidad para entender tecnologías, leyes o sistemas complejos).
+• Presencia Social ℹ️: Invisible | Común | Carismático | Imponente. (Afecta la primera impresión y la capacidad de liderazgo).
+• Estatus de Casta/Clase ℹ️: Paria | Plebeyo | Influyente | Noble/Elite. (Define acceso a lugares, justicia y respeto de NPCs).
+3. Matriz de Posicionamiento y Reputación (Persistente):
+• Condición Social ℹ️: Descriptor de origen y posición actual (ej. Campesino, Erudito, Vagabundo).
+• Reputación Local ℹ️: Cómo te ven en tu ubicación actual (ej. Desconocido, Héroe de Vertain, Fugitivo).
+• Renombre Global ℹ️: Tu fama en el mundo/historia (ej. Rumor Lejano, Figura de Interés, Leyenda Viva).
+• Relaciones Activas: Lista dinámica de vínculos actuales y su carga emocional.
+4. Sistema de Especialización por Era ℹ️:
+Las habilidades se muestran como etiquetas de Grado de Autonomía: Nulo | Aprendiz | Competente | Maestro.
+• Aptas para cada época: Supervivencia (Caza/Recolección), Oficios (Herrería/Programación), Artes Bélicas (Espadas/Balística), Erudición (Alquimia/Ciencia).
+GAME SCREEN — MODO HUMANO
+• Top bar: ← (diálogo de confirmación) | fecha en juego + etiqueta de era | nombre del personaje + edad.
+• Banner de etapa (visible durante infancia 0–12): “Edad: X años — [descripción de agencia disponible]” + botón “⏩ Avanzar etapa” prominente de color amber.
+• Main area: Texto narrativo en Lora serif, tamaño cómodo, line height amplio. Texto streamed con fade-in por párrafo. Imágenes cinematográficas entre párrafos. Placeholder oscuro pulsante mientras carga la imagen, fade in al aparecer.
+• Bottom input area (siempre visible): Fila de 3–4 chips de acción generados por la IA arriba del input. Campo de texto con placeholder “¿Qué haces?”. Botón enviar. Fila de botones: Hablar / Acción / Observar / Pensar. Botón “⏩ Avanzar tiempo”.
+• Side panel (strip colapsado, siempre visible a la derecha): Portrait pequeño + nombre + edad + 3 pills de descriptores clave. Tap para expandir ficha completa.
+• Status bar (colapsable desde abajo): Health / Energy / Hunger / Morale / MentalHealth en barras con porcentajes. Localización actual + clima.
+PANEL ① PERSONAJE — Ficha completa con 9 tabs
+• Tab Identidad: Nombre completo, género, clase social, año de nacimiento, edad actual, tez, cabello, ojos, complexión, rasgos distintivos (chips), descripción libre. Portrait generado por IA que EXACTAMENTE coincide con la descripción física. El portrait se actualiza si la apariencia cambia significativamente o por edad. Botón regenerar portrait.
+• Tab Atributos ℹ️: Visualización de las 4 Dimensiones Vitales y los 3 Perfiles de Competencia. Cada uno con su icono ℹ️ para tutorial narrativo.
+• Tab Descriptores: Categorías pobladas automáticamente: Condición Social, Reputación Local, Renombre Global, Relaciones Activas y Estado Físico/Mental general.
+• Tab Inventario: Lista de items con nombre, descripción, condición. Subsección Vestimenta, Monedas y Objetos especiales.
+• Tab Habilidades: Adquiridas durante la partida con descriptor de nivel (Grado de Autonomía).
+• Tab Relaciones: Sub-tabs Familia, NPCs conocidos y Facciones.
+• Tab Historia: Timeline autogenerado de eventos con peso emocional.
+• Tab Salud: Lesiones/enfermedades activas y su progresión real.
+• Tab Psicología: Clima emocional actual (color) e historial de voz interior.
+• Tab Legado: Acciones de alto peso y cola de consecuencias pendiente.
+PANEL ③ MAPA — MUST RENDER
+Renderizado procedural vía Canvas 2D. Colores: Agua (azul), Tierra (marrón/verde), Montaña (gris), Bosque (verde oscuro), Nieve (blanco). Consistencia vía seed única. Posición actual: punto ámbar pulsante. Niebla de guerra en áreas no exploradas. Puntos de interés con tooltip. La IA actualiza el mapa con cada narración al descubrir nuevas zonas.
+PANEL ④ NPCs — Fichas individuales completas
+Lista de todos los NPCs con thumbnail, nombre y estado. Al tocar un NPC: FICHA INDIVIDUAL COMPLETA con Identidad (Portrait IA preciso), Descriptores, Relación (Carga emocional), Inventario conocido, Motivaciones e Historia conocida.
+PANEL ⑧ MEMORIA IA
+Campo “Notas para el narrador”: texto libre que la IA DEBE leer en cada turno. Campo “Reglas de esta partida”: instrucciones específicas. Hechos canónicos autogenerados y Timeline en-juego completo.
+SISTEMA DE AVANCE TEMPORAL (SALTAR TIEMPO)
+Disponible mediante botón “⏩ Avanzar tiempo”. Opciones: Avance por etapas vitales (0-60+ años), por años específicos o a año concreto.
+Al confirmar: La IA genera narración extensa (mín 600 palabras) cubriendo el período. Actualización automática de: edad, atributos realistas, descriptores sociales, inventario, envejecimiento/muerte de NPCs y resolución de consecuencias pendientes.
+NARRATIVE SYSTEMS & CONFLICT RESOLUTION
+• Age-based interaction: Edad 0-2 (Narración cinematográfica pura), 3-6 (Solo sugerencias), 7-11 (Texto libre filtrado), 12+ (Agencia progresiva).
+• Calidad: Mínimo 200 palabras por respuesta; narraciones iniciales/saltos mín 500-600 palabras.
+• Conflict Resolution: Sin dados ni números. Resultados narrados como consecuencias inevitables basadas en la combinación de Atributos Realistas e historial previo.
+• Memoria Profunda: Turnos etiquetados para recuperación por resonancia temática.

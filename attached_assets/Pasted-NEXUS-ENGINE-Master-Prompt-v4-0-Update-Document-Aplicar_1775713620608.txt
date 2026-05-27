@@ -1,0 +1,207 @@
+NEXUS ENGINE — Master Prompt v4.0
+Update Document — Aplicar sobre la versión existente sin eliminar nada
+AGENT INSTRUCTIONS — READ FIRST
+Apply every section of this document as an update to the existing project. Do not delete, reset, or rebuild anything that is already working. Implement what is new, fix what is broken, and expand what is incomplete. When you finish or reach a stopping point, provide a complete report of: (1) what was fully implemented, (2) what was partially done and what remains, (3) anything that could not be implemented and why. Then wait for instructions before continuing.
+
+TECH STACK
+Frontend: React + TypeScript + Vite
+Styling: Tailwind CSS
+Database: Supabase (PostgreSQL) — cross-run persistence
+AI Narration: Anthropic Claude API (claude-sonnet-4-20250514)
+Image Generation: Replicate API (realistic/cinematic, never anime or pixel art)
+Map: Procedural canvas-based map — MUST render terrain, current position (amber dot), explored areas and points of interest
+PWA: Vite PWA plugin
+State: Zustand with persist middleware (localStorage)
+Routing: React Router v6
+Auth: Supabase Auth
+
+PROJECT STRUCTURE
+nexus-engine/
+├── src/
+│ ├── engine/ — Game-agnostic core logic only
+│ ├── games/
+│ │ ├── una-vida/config.ts
+│ │ └── exodus/config.ts
+│ ├── ui/
+│ │ ├── screens/
+│ │ └── components/
+│ ├── store/ — Zustand stores
+│ ├── lib/ — API clients
+│ └── types/
+The engine contains ZERO game-specific logic. Games are pure configuration objects.
+
+STATE PERSISTENCE — CRITICAL
+Zustand store with persist middleware writing to localStorage on EVERY state change. Opening any panel, section, or overlay during an active run must NEVER reset or clear the narrative history. Run state survives: panel switching, screen navigation, page refresh, browser close/reopen. Full run history persisted: all narration turns, events, character state, world state. On app load: check localStorage for active run → show “Continuar partida” if found. NEVER use React useState for active run data — only Zustand + localStorage. Manual save button always available during a run: saves everything explicitly to Supabase as backup.
+
+SISTEMA DE GUARDADO — FIX CRÍTICO
+El sistema de guardado DEBE permitir múltiples partidas guardadas simultáneamente. Actualmente crear una partida nueva borra la anterior — esto es un bug que debe corregirse.
+Cada partida guardada es un objeto independiente con ID único. Al guardar se asigna un slot nuevo sin sobrescribir los existentes a menos que el jugador elija explícitamente “Sobreescribir” sobre una partida ya guardada.
+El panel de Guardado muestra la lista completa de partidas guardadas. Cada entrada muestra: nombre del personaje, era, año en juego actual, edad del personaje, fecha real de guardado, botón “Cargar” (carga esa partida y la activa), botón “Eliminar” (con confirmación). Hay un botón “Guardar partida actual” que siempre crea un nuevo slot o permite elegir sobreescribir uno existente. Botón “Exportar resumen” genera texto exportable de los momentos clave de esa partida. La pantalla de inicio muestra todas las partidas activas con banner “CONTINUAR” para cada una, no solo la última.
+
+AI MEMORY SYSTEM — CRÍTICO
+La IA DEBE leer y respetar absolutamente TODOS los datos almacenados antes de generar cualquier narración. Si el jugador definió que su madre se llama Marthe Leonids, la IA NUNCA puede usar otro nombre. Si definió que nació en Vertain, la IA NUNCA puede ignorarlo. TODOS los datos definidos por el jugador son canónicos y tienen prioridad absoluta sobre cualquier generación propia.
+Antes de cada llamada a la API, el motor inyecta automáticamente en el system prompt: ficha completa del personaje con todos sus campos tal como el jugador los definió, estado del mundo actual, fichas completas de todos los NPCs conocidos, fichas de todas las facciones conocidas, el historial completo de TODOS los turnos de la partida sin excepción, cola de consecuencias activa, inventario completo, descriptores actuales, clima emocional actual, últimas entradas de voz interior, año y fecha en juego actuales, y todas las instrucciones permanentes del jugador.
+La IA mantiene una base de conocimiento interna que se actualiza automáticamente. Cada NPC que aparece queda registrado con toda su información y la IA nunca puede olvidarlo ni contradecirlo. Cada hecho establecido narrativamente (nacimientos, muertes, eventos, acuerdos, objetos obtenidos) se registra como hecho canónico y no puede ser contradicho. La IA nunca inventa datos que ya están definidos.
+Panel “Memoria IA” accesible desde el juego como panel propio. Contiene: lista de todos los hechos canónicos establecidos, timeline completo en-juego con fecha y turno de cada evento, red de relaciones entre todos los personajes actualizada tras cada turno, campo de notas del narrador (texto libre, sin límite de caracteres, la IA DEBE leerlas en cada turno), campo de reglas personalizadas de partida (texto libre, sin límite, instruye a la IA sobre esa partida específica), campo de instrucciones permanentes globales (texto libre, sin límite, la IA las sigue en TODAS las partidas siempre).
+
+NAVIGATION RULES — APPLY EVERYWHERE
+Every screen and every panel must have a functional back button (← or X) that never causes state loss. A “Guardar” or “Aplicar” button where changes can be made. A “Siguiente” button where multi-step flows require it. Confirmation dialog when exiting an active run: “¿Pausar y salir? Tu progreso se guardará.” All screen transitions animated (subtle fade or slide). Browser back button works correctly without state loss.
+
+HOME SCREEN
+Full-screen atmospheric dark background with subtle animated particle effect. Top: NEXUS ENGINE logo/wordmark. Center: Two game cards side by side (desktop) / stacked (mobile). Bottom: “Perfil” button + “Mundos” button + “Configuración” button.
+Each game card shows: game name (large), tagline (italic), status badge, atmospheric background gradient unique to that game, “Jugar” button. Si existen partidas guardadas: mostrar todas las partidas activas con banner “CONTINUAR” individual para cada una, no solo la última.
+Card 1 — UNA VIDA: Tagline: “Vive cualquier vida, en cualquier época, en la Tierra. Sin objetivos. Simplemente existe.” Status: DISPONIBLE. Background: deep blue-green gradient.
+Card 2 — EXODUS: Tagline: “La Tierra ya no existe. Encuentra un nuevo hogar.” Status: PRÓXIMAMENTE (locked — clicking shows a “Próximamente” info screen, not an error). Background: dark space gradient.
+
+WORLD BUILDER (accesible desde Home)
+Dedicated section for creating, saving, and managing custom worlds. Accessible from the “Mundos” button. NOT inside character creation.
+World attributes — all definable:
+Nombre / Etiqueta de era. Años disponibles: rango o lista específica. Geografía: continentes, biomas, zonas climáticas, rasgos geográficos — texto libre + botón “✦ Generar geografía”. Nivel tecnológico: botones preset (Prehistórico / Antiguo / Medieval / Industrial / Moderno / Futurista) + campo de texto libre. Sistema político: presets (Tribal, Feudal, Imperial, República, Teocracia, Anarquía, Dictadura, Democracia…) + texto libre. Religión y creencias: sistemas dominantes, panteones, reglas — texto libre + botón AI sugerir. Moneda y economía: nombre/tipo de moneda, sistema de intercambio, slider de desigualdad. Idiomas y cultura: idiomas, normas culturales, tabúes, costumbres — texto libre. Fauna y flora: incluyendo criaturas y plantas ficticias con descripciones — texto libre + AI sugerir.
+Reglas especiales: toggle de magia (si activo: tipo de magia, quién puede usarla, coste y reglas). Enfermedades únicas: añadir enfermedades nombradas con descripción y transmisión. Otras reglas personalizadas: texto libre sin límite.
+Nivel de peligro base: slider 1–10 (PACÍFICO → BRUTAL / MODO REALISMO). Eventos históricos predefinidos: hasta 20 eventos que OCURRIRÁN en años específicos — lista de items. Notas libres: texto sin límite.
+“✦ Completar mundo”: la IA rellena todos los campos vacíos de forma coherente con lo ya definido. “✦ Generar mundo completo”: la IA genera el mundo entero desde nombre + concepto de una frase. Al crear partida: el jugador elige Mundo aleatorio (procedural) o Mundo guardado (desde lista). Botones: Guardar / Cancelar / Eliminar. Volver a Home.
+Subsecciones del Mundo expandidas (visibles durante la partida en el panel Mundo):
+TIEMPO Y LUGAR: Año actual, era, estación, clima actual detallado (temperatura, precipitación, viento), hora del día.
+LOCALIZACIÓN ACTUAL: Nombre del lugar, descripción sensorial completa (olores, sonidos, texturas, arquitectura), tipo de asentamiento, población estimada, actividad económica principal.
+CLIMA POLÍTICO: Estado general, facciones en conflicto activo, alianzas vigentes, tensiones latentes, figura de autoridad local, figura de autoridad regional.
+REGLAS DE ERA: Tags activos de reglas del mundo.
+ECONOMÍA Y RECURSOS: Estado de la economía local, escasez o abundancia de recursos clave, precio de referencia de bienes comunes.
+EVENTOS ACTIVOS: Conflictos en curso, epidemias, fenómenos climáticos, festividades, guerras.
+HISTORIA DEL MUNDO: Timeline de eventos históricos predefinidos ya ocurridos, con fecha y descripción.
+GEOGRAFÍA: Descripción del territorio, biomas cercanos, rutas conocidas, accidentes geográficos relevantes.
+FAUNA Y FLORA LOCAL: Especies presentes en la zona actual, sus comportamientos y peligros.
+
+RUN CREATION FLOW — MODO HUMANO
+Multi-step flow. Every step has: ← Back, Siguiente →, step indicator at top.
+Step 0 — Mode Selection: Two large cards. MODO HUMANO: “Eres un personaje viviendo en el mundo. Tu perspectiva es la de un ser humano con limitaciones reales.” → lleva a creación de personaje. MODO DIOS: “Eres una entidad omnisciente. Observas, intervenes, y controlas el mundo desde fuera.” → lleva a World Genesis. Cada card tiene botón de información expandible.
+Step 1 — Game Context: Muestra nombre del juego, frase atmosférica, descripción breve. Solo lectura.
+Step 2 — Era & World: Toggle Mundo aleatorio / Mundo guardado. Selector Año de la era +/−. Fecha de nacimiento: día (1–31) + mes (nombres adaptados a la era). Toggles de reglas del mundo: Magia / Tecnología futurista / Desastres naturales / Guerra / Enfermedad. Reglas adicionales dinámicas según era. Slider MODO REALISMO 1–10. Notas adicionales del mundo: texto libre. “✦ Generar contexto del mundo”: llama a la API y muestra el resultado — MUST work.
+Step 3 — Identity: Nombre (texto libre, placeholder: “Déjalo vacío para generación automática”). “✦ Sugerir nombre”: llama a API → devuelve 3 chips de nombres apropiados para la era. Género: dos botones fijos (Hombre / Mujer). Clase social: grid de botones filtrados por era. Riqueza inicial: slider (Miseria → Pobreza → Clase Media → Riqueza → Opulencia).
+Step 4 — Appearance: Botón “✦ Generar completa” llama a API con era + clase + género y rellena todos los campos. Altura: dropdown (Muy bajo / Bajo / Promedio / Alto / Muy alto). Complexión: dropdown (Delgado / Esbelto / Atlético / Promedio / Robusto / Corpulento / Obeso). Tez: dropdown con opciones apropiadas a la era. Cabello: texto libre + “✦ Sugerir”. Ojos: dropdown. Rasgos distintivos: sistema de chips presets + campo para añadir chips propios sin límite máximo, cada chip con X para eliminar. Descripción libre: textarea opcional. Todo filtrado por era.
+Step 5 — Personality: “✦ Generar personalidad” llama a API con todos los datos hasta aquí. Rasgos positivos (mín 1, máx 5): mínimo 15 chips preset. Rasgos negativos (mín 1, máx 5): mínimo 15 chips preset. Valores (mín 1, máx 3): mínimo 15 chips preset. Miedos (mín 1, máx 5): mínimo 20 chips preset. Motivaciones: texto libre + “✦ Sugerir”. Peculiaridades: texto libre + “✦ Sugerir”.
+Step 6 — Skills & Background: Habilidades (mín 1, máx 7): mínimo 25 chips filtrados por era. Limitaciones (mín 1, máx 5): mínimo 15 chips. Historia de origen: textarea + “✦ Generar historia de origen” que llama a la API. Relaciones iniciales (hasta 5): cada una con campo de nombre + dropdown de tipo (mínimo 15 opciones: Madre / Padre / Hermano/a / Hijo/a / Abuelo/a / Tío/a / Primo/a / Amigo íntimo / Rival / Mentor / Amor / Enemigo / Aliado / Empleador / Vecino / Protector / Deudor…) + descripción breve + botón Agregar relación.
+Step 7 — Beliefs: “✦ Sugerir creencias acordes a la época”. Religión / Fe: texto libre. Filosofía de vida: mínimo 15 chips con botón de info en cada uno. Visión política: chips preset + texto libre.
+Step 8 — Final Review: Tarjeta resumen de todos los atributos. “✦ Generar narrativa de presentación” llama a API. Botón “COMIENZA LA EXISTENCIA” (verde, grande). Error si faltan campos obligatorios. Tap en cualquier sección del resumen vuelve a ese paso.
+
+SALTAR TIEMPO — SISTEMA DE AVANCE TEMPORAL
+Durante una partida activa, siempre disponible desde la pantalla de juego mediante un botón visible “⏩ Avanzar tiempo”, accesible también desde el panel de Personaje y desde el input de acciones.
+Al activarlo, se abre un panel con las siguientes opciones:
+AVANCE POR ETAPAS VITALES: Botones que saltan directamente a la siguiente etapa de vida del personaje. Las etapas disponibles dependen de la edad actual: Primera infancia (0–2 años), Infancia temprana (3–6 años), Infancia media (7–11 años), Adolescencia (12–17 años), Juventud (18–24 años), Adultez temprana (25–39 años), Madurez (40–59 años), Vejez (60+). El botón de cada etapa solo aparece si el personaje aún no ha llegado a ella. Se puede saltar una etapa o varias a la vez seleccionando el destino.
+AVANCE POR AÑOS ESPECÍFICOS: Campo numérico donde el jugador escribe exactamente cuántos años quiere avanzar (mínimo 1, sin máximo salvo la edad de muerte natural estimada). Botón “Avanzar X años”.
+AVANCE A AÑO CONCRETO: Campo para escribir el año en juego exacto al que se quiere llegar. El sistema calcula los años que faltan y muestra cuánta edad tendría el personaje.
+Al confirmar cualquier avance: El sistema muestra un mensaje “Narrando X años de vida de [nombre]…” con animación de carga. La IA genera una narración extensa y coherente (mínimo 600 palabras) cubriendo todo el período saltado: eventos importantes, cambios de vida, relaciones que evolucionaron, habilidades adquiridas, pérdidas sufridas, momentos definitorios. La narración respeta TODOS los datos ya establecidos del personaje, el mundo y los NPCs. El motor actualiza automáticamente: edad del personaje, descriptores, inventario (añade o elimina items coherentes con el tiempo pasado), relaciones (los NPCs envejecen, algunos pueden morir si la edad lo justifica), habilidades (puede añadir nuevas aprendidas durante ese período), historial de personaje (se añaden entradas para el período), cola de consecuencias (las pendientes se resuelven o escalan). Si el período saltado incluye etapas donde se desbloquea la escritura libre (edad 13+), la narración lo menciona explícitamente y al terminar el juego retoma desde la edad de destino con todas las opciones desbloqueadas. La narración del salto se muestra en el área principal de juego como cualquier otra narración, con el mismo formato visual. El jugador puede hacer múltiples saltos en cualquier momento.
+Durante el período de infancia (0–12), la pantalla de juego muestra un banner: “Edad actual: X años — [descripción de lo que puede hacer el jugador en esta etapa]” y un botón prominente “⏩ Avanzar a la siguiente etapa” para que sea visible y accesible sin necesidad de buscarlo.
+
+RUN CREATION FLOW — MODO DIOS (World Genesis)
+Completamente separado del Modo Humano. Sin creación de personaje.
+Step 1 — World Definition: Igual al World Builder pero específico para esta partida.
+Step 2 — Initial Conditions: Año de inicio. Personajes semilla: el jugador define 1–5 personajes que existen al inicio (versión simplificada de creación de personaje). Eventos iniciales del mundo: hasta 5 eventos ya ocurridos antes del inicio.
+Step 3 — God Preferences: Nivel de intervención (Observador / Intervencionista / Creador activo). Configuración de visibilidad: qué información se muestra siempre (pensamientos de todos los personajes, capas ocultas, cola de consecuencias).
+Step 4 — Begin: Botón “QUE EXISTA”.
+
+GAME SCREEN — MODO HUMANO
+Top bar: ← (diálogo de confirmación) | fecha en juego + etiqueta de era | nombre del personaje + edad.
+Banner de etapa (visible durante infancia 0–12): “Edad: X años — [descripción de agencia disponible]” + botón “⏩ Avanzar etapa” prominente de color amber.
+Main area: Texto narrativo en Lora serif, tamaño cómodo, line height amplio. Texto streamed con fade-in por párrafo. Imágenes cinematográficas entre párrafos. Placeholder oscuro pulsante mientras carga la imagen, fade in al aparecer.
+Bottom input area (siempre visible): Fila de 3–4 chips de acción generados por la IA arriba del input. Campo de texto con placeholder “¿Qué haces?”. Botón enviar. Fila de botones: Hablar / Acción / Observar / Pensar. Botón “⏩ Avanzar tiempo”.
+Side panel (strip colapsado, siempre visible a la derecha): Portrait pequeño + nombre + edad + 3 pills de descriptores clave. Tap para expandir ficha completa.
+Status bar (colapsable desde abajo): Health / Energy / Hunger / Morale / MentalHealth en barras con porcentajes. Localización actual + clima.
+Panels expandibles como overlays (NUNCA resetean la narración al abrirse, cada uno tiene botón ×):
+① Personaje, ② Mundo, ③ Mapa, ④ NPCs, ⑤ Facciones, ⑥ Editor, ⑦ Guardado, ⑧ Memoria IA
+
+PANEL ① PERSONAJE — Ficha completa con 9 tabs
+Tab Identidad: Nombre completo, género, clase social, año de nacimiento, edad actual, tez, cabello, ojos, complexión, rasgos distintivos (chips), descripción libre. Portrait generado por IA que EXACTAMENTE coincide con la descripción física (color/largo/estilo de cabello, complexión, edad, tono de piel, rasgos, ropa de la era). El portrait se actualiza si la apariencia cambia significativamente. Botón regenerar portrait.
+Tab Descriptores: Todas las categorías pobladas automáticamente por el motor. Cada descriptor tiene tooltip con icono ⓘ explicando por qué el personaje lo tiene. Categorías: Estado Físico (Saludable / Herido leve / Herido grave / Agotado / Hambriento / Enfermo / Debilitado / En forma / Robusto / Frágil / Agonizando), Condición Mental (Lúcido / Traumatizado / Perturbado / Sereno / Desesperado / Resiliente / Ansioso / Disociado / Determinado / Al límite), Combate (Sin entrenamiento / Aprendiz / Competente / Experimentado / Veterano / Letal / Especialista en [tipo] / Desarmado), Habilidades Sociales (Intimidante / Persuasivo / Reservado / Carismático / Desconfiado / Diplomático / Manipulador), Conocimiento (Analfabeto / Letrado / Erudito / Experto en [área] / Curioso / Sabio), Condición Social (Marginado / Campesino / Artesano / Comerciante / Noble / Influyente / Proscrito / Respetado / Temido / Desconocido), Reputación Local (Desconocido / Conocido / Respetado / Temido / Odiado / Leyenda local / Buscado), Relaciones Activas (lista de descriptores de relación activos).
+Tab Inventario: Lista de items con nombre, descripción detallada, condición (Nuevo / Usado pero funcional / Deteriorado / Roto / Gastado / Fresco / Permanente), procedencia narrativa. Subsección Vestimenta: ropa capa por capa apropiada a la era, afecta interacciones sociales y supervivencia climática. Subsección Monedas: moneda apropiada a la era con poder adquisitivo contextual. Subsección Objetos especiales: items con significado narrativo, marcados automáticamente. TODO editable desde el Editor.
+Tab Habilidades: Habilidades adquiridas durante la partida con descriptor de nivel. Áreas de conocimiento. Idiomas conocidos. Limitaciones con sus descriptores. No se pueden añadir manualmente sin justificación narrativa.
+Tab Relaciones: Sub-tab Familia (relaciones familiares directas con descriptor emocional). Sub-tab NPCs conocidos (todos los NPCs encontrados, con descriptor de relación, estado vivo/muerto/desaparecido). Sub-tab Facciones (standing con cada facción conocida). Cada entrada expandible muestra último encuentro y descriptor de la relación.
+Tab Historia: Timeline autogenerado. Cada evento: fecha en juego, descripción, peso emocional. Expandible a narrativa completa. Filtrable por período.
+Tab Salud: Condición física actual. Lesiones/enfermedades activas: nombre, severidad, cómo se adquirió, progresión. Estado nutricional, estado de descanso. Historial de salud a largo plazo.
+Tab Psicología: Clima emocional actual con indicador de color. Log de voz interior (últimas 10 entradas). Marcadores de trauma con efectos narrativos. Rasgos de personalidad (los definidos en creación). Arco de desarrollo del personaje (generado periódicamente por la IA).
+Tab Legado: Acciones de alto peso narrativo. Objetos escondidos o dejados atrás. Relaciones que podrían resonar en futuras partidas. Cola de consecuencias completa (todas las consecuencias pendientes con turno estimado de activación).
+
+PANEL ② MUNDO — Todas las subsecciones descritas en World Builder arriba, mostradas en tiempo real actualizado. TODO editable desde el Editor.
+
+PANEL ③ MAPA — MUST RENDER (no puede estar en negro)
+El mapa DEBE renderizarse siempre con: Terreno generado proceduralmente usando canvas 2D con colores diferenciados para agua (azul oscuro), tierra (verde oscuro / marrón según bioma), montañas (gris), bosques (verde), desierto (arena), nieve (blanco). El terreno se genera desde una seed única por partida, garantizando consistencia entre sesiones. Posición actual del personaje: punto ámbar pulsante. Áreas exploradas más brillantes, áreas no exploradas oscurecidas con niebla de guerra. Puntos de interés: iconos pequeños con tooltip al tap (asentamiento, ruina, recurso, peligro, marcador de legado). Marcadores de NPCs conocidos si su última posición conocida está en el mapa. Nombre del lugar actual en la esquina inferior. Escala contextual según era y medio de transporte. Botón para centrar en posición actual. Pinch to zoom / scroll to zoom. La IA actualiza el mapa con cada narración: nuevas áreas al explorarlas, nuevos puntos de interés al descubrirlos.
+
+PANEL ④ NPCs — Fichas individuales completas
+Lista de todos los NPCs encontrados. Cada NPC en la lista muestra: portrait thumbnail, nombre, descriptor de relación, estado (vivo/muerto/desaparecido) con color indicativo. Buscable por nombre, descriptor, ubicación, relación.
+Al tocar cualquier NPC se abre su FICHA INDIVIDUAL COMPLETA como sub-panel (pantalla completa de ficha, no un dropdown), con los siguientes tabs:
+Tab Identidad: Portrait IA (EXACTAMENTE coincide con descripción física — calvo = retrato calvo, sin excepciones). Nombre o “Desconocido”. Edad estimada. Género. Clase social. Ocupación. Última ubicación conocida. Descripción física completa.
+Tab Descriptores: Misma estructura que el personaje. Los desconocidos muestran “???”. Toggle de configuración para revelarlos todos.
+Tab Relación: Tipo de relación. Carga emocional (Neutral / Afecto / Amor / Desconfianza / Odio / Miedo / Deuda / Lealtad / Rivalidad). Momentos clave entre personaje y NPC. Última actitud conocida. Historial de interacciones.
+Tab Inventario conocido: Solo items que el personaje ha visto. Desconocidos = “???”.
+Tab Motivaciones: Objetivos conocidos. Miedos conocidos. Motivaciones ocultas (solo visibles si fueron descubiertas narrativamente o si está activo el Modo Dios).
+Tab Historia conocida: Lo que el personaje sabe de este NPC. Desconocido = “???”. La IA añade entradas automáticamente cuando se descubre algo.
+Tab Estado: Vivo / Muerto / Desaparecido. Si muerto: cómo y cuándo. Si desaparecido: cuándo y circunstancias.
+Tab Legado: Consecuencias pendientes relacionadas con este NPC. Peso narrativo de la relación.
+La ficha de NPC se llena progresivamente. El motor la actualiza automáticamente con cada evento narrativo relevante. TODO editable desde el Editor (tab NPCs). Botón “Crear NPC manualmente” en la lista.
+
+PANEL ⑤ FACCIONES — PANEL COMPLETO
+Panel propio independiente. Lista de todas las facciones conocidas (naciones, reinos, instituciones, gremios, cultos, grupos de bandidos, familias, clanes, movimientos políticos, órdenes religiosas, etc.).
+Cada facción en la lista muestra: nombre, tipo, standing actual del personaje con esa facción (color indicativo: verde = aliado, gris = neutral, rojo = enemigo, amarillo = tenso), estado (activa / disuelta / en guerra / en declive).
+Al tocar una facción se abre su FICHA INDIVIDUAL COMPLETA:
+Tab Identidad: Nombre. Tipo (Reino / Gremio / Culto / Familia / Ejército / Institución / Movimiento / Clan…). Símbolo o emblema (descripción textual). Sede o territorio principal. Líder conocido. Tamaño estimado (Pequeño / Mediano / Grande / Masivo). Año de fundación estimado. Eslogan o creencia central. Idioma o dialecto propio si aplica.
+Tab Cultura y Valores: Valores centrales. Normas internas. Tabúes. Rituales o prácticas conocidas. Sistema de jerarquía interna. Cómo tratan a los extranjeros. Postura respecto a otras facciones.
+Tab Relaciones: Standing del personaje jugador con esta facción y por qué. Relaciones de esta facción con otras facciones (aliadas / enemigas / neutrales). Eventos que cambiaron las relaciones.
+Tab Miembros conocidos: Lista de NPCs que pertenecen a esta facción con su rango. Expandible a su ficha individual.
+Tab Historia: Timeline de eventos importantes. Fundación. Guerras. Alianzas. Cambios de liderazgo. Solo lo que el personaje conoce (el resto = “???”).
+Tab Territorio: Zonas bajo influencia. Recursos controlados. Rutas comerciales. Fronteras disputadas.
+Tab Estado actual: Situación política/militar actual. Conflictos activos. Alianzas vigentes. Amenazas internas o externas.
+La ficha de facción se llena progresivamente. TODO editable desde el Editor. Botón “Crear facción manualmente”. El motor añade facciones automáticamente cuando la narración las introduce.
+
+PANEL ⑥ EDITOR — Editor completo en tiempo de ejecución
+NUNCA resetea la narración al abrirse. Accesible siempre durante una partida. 5 tabs: Narrativa, Mundo, Personaje, NPCs, Legado.
+Tab Narrativa: Selector de voz narrativa: Narrador externo / Primera persona / El mundo habla. Modo explícito: toggle maestro + sub-toggles: Violencia y gore, Lenguaje vulgar, Contenido sexual, Tortura y crueldad extrema, Consumo de sustancias detallado, Trauma psicológico explícito. Display del clima emocional actual. Toggle perspectivas externas. Toggle tiempo subjetivo. Intensidad de narración: slider (Mínima / Normal / Extensa / Épica). Ritmo narrativo: slider (Frenético / Normal / Pausado / Contemplativo). Botón “Regenerar última narración”. Botón “Corregir continuidad”.
+Tab Mundo: Editar era/año. Editar todas las reglas del mundo. Editar notas de geografía. Editar clima. Editar fauna/flora. Editar reglas especiales. Añadir eventos futuros predefinidos. Editar cualquier campo del panel Mundo. Editar estado de cada facción. Guardar / Aplicar / Cancelar.
+Tab Personaje: Editar TODOS los campos de la ficha: identidad, apariencia, personalidad, valores, miedos, motivaciones, habilidades, limitaciones, historia de origen, relaciones. Editar descriptores. Añadir o eliminar items del inventario. Añadir o eliminar entradas en el historial. Editar clima psicológico. Botón de regeneración de portrait. Guardar / Aplicar / Cancelar.
+Tab NPCs: Ver todas las fichas de NPCs. Editar CUALQUIER campo de CUALQUIER NPC. Crear nuevo NPC. Regenerar portrait de cualquier NPC. Cambiar estado (vivo/muerto/desaparecido). Añadir o eliminar relaciones entre NPCs. Guardar / Aplicar / Cancelar.
+Tab Legado: Ver consecuencias activas en la cola. Toggle de qué ecos de legado están activos. Ajustar dificultad de descubrimiento de cada eco. Ver cola de consecuencias completa. Añadir consecuencias manualmente. Guardar / Aplicar / Cancelar.
+
+PANEL ⑦ GUARDADO
+Botón “Guardar partida actual” — crea un nuevo slot, no sobrescribe los existentes a menos que el jugador elija explícitamente una partida ya guardada para sobreescribir. Lista de todas las partidas guardadas con: nombre del personaje, era, edad actual, fecha de guardado, botón “Cargar”, botón “Eliminar” (con confirmación). Botón “Exportar resumen de partida”.
+
+PANEL ⑧ MEMORIA IA
+Campo “Notas para el narrador”: texto libre sin límite de caracteres. La IA DEBE leer esto en cada turno. Campo “Reglas de esta partida”: texto libre sin límite. Instrucciones que la IA sigue solo en esta partida. Campo “Instrucciones permanentes globales”: texto libre sin límite. La IA las sigue en ABSOLUTAMENTE TODAS las partidas, siempre. Lista de hechos canónicos establecidos (autogenerada). Timeline en-juego completo (autogenerado, expandible). Red de relaciones (visualización simplificada de conexiones entre personajes). Botón “Forzar re-lectura del contexto”.
+
+GAME SCREEN — MODO DIOS
+Vista amplia: mapa del mundo siempre visible como área principal. Selector de personaje para enfocarse en cualquier personaje del mundo. Panel del personaje enfocado: estado, pensamientos (visibles en Modo Dios), acciones actuales. Panel de cola de consecuencias lateral. Panel de capa oculta. Input: “¿Qué haces ocurrir?” Opciones de intervención: Causar evento / Alterar clima / Susurrar a personaje / Acelerar tiempo / Detener tiempo.
+
+NARRATIVE SYSTEMS
+Age-based interaction: Edad 0: Sin interacción. Narración cinematográfica pura del nacimiento, el entorno, los padres, las primeras semanas. Mínimo 400 palabras. Completamente única cada vez. Edades 0–2: Narración pura. Sin input del jugador. Edades 3–6: Solo sugerencias. Sin texto libre. Edades 7–11: Texto libre con filtrado contextual intenso. Edades 12–17: Agencia más amplia, filtrada por contexto. Edad 18+: Agencia completa sin restricciones dentro de las reglas del mundo.
+Durante las etapas 0–12 el sistema muestra el banner de etapa y el botón de avance temporal prominente en todo momento.
+Calidad narrativa: Mínimo 200 palabras por respuesta. Primera narración: mínimo 500 palabras, larga, atmosférica, cinematográfica, siempre completamente única. Narración de salto temporal: mínimo 600 palabras cubriendo coherentemente todo el período. Nunca repetir la misma estructura narrativa, frase inicial o configuración de escena entre partidas. Variar estructura de frases, ritmo, vocabulario. Referenciar detalles específicos apropiados a la era. Rastrear y referenciar eventos recientes orgánicamente. Las acciones sugeridas son siempre generadas por IA, contextuales, nunca hardcoded, nunca repetidas.
+Sistemas narrativos activos durante cada partida: Memoria Profunda (cada turno auto-etiquetado, recupera eventos pasados por resonancia temática, emocional, de ubicación, inyectados como ecos disponibles). Voz Interior (log de entradas del jugador, el narrador las saca en momentos emocionalmente resonantes, nunca citadas directamente). Clima Emocional (promedio progresivo, estados: Sereno / Ansioso / De duelo / Eufórico / Entumecido / Desesperado / Esperanzador / Traumatizado, cambia lentamente, afecta tono y acciones sugeridas). Otras Perspectivas (cuando activo, narrador cambia brevemente a perspectiva de NPC, tipográficamente distinto, solo en momentos dramáticamente relevantes). Ecos del Pasado (legado de partidas anteriores como textura narrativa únicamente, nunca anunciado). Secretos y Cosas No Dichas (capa oculta para eventos significativos, señales sutiles en la narración, visible completa en Modo Dios). Sueños (generados al dormir, siempre saltables, no siempre significativos, no dormir causa deterioro realista). Tiempo Subjetivo (invisible, solo sentido a través del ritmo de la prosa). El Mundo como Narrador (memoria de objetos, narración espacial, ironía ambiental, anclaje sensorial, ausencia como presencia). Consecuencias Diferidas (cola de consecuencias con timing realista, posible cascada, visible en Modo Dios y tab Legado).
+
+CONFLICT RESOLUTION
+Sin números, sin dados, sin porcentajes. Resultados narrados como consecuencias inevitables. Físico: cuerpo vs oponente, habilidades, estado físico, armas, entorno, estado psicológico. Social: clase relativa, reputación, historial de comunicación, normas culturales, estado emocional. Supervivencia: conocimiento + recursos + condición física + experiencia. Influencia del jugador: si es previsible el jugador puede prepararse en turnos anteriores con efecto real; si es sorpresa no hay ventana de preparación.
+
+CULTURAL AND ERA COHERENCE
+Moneda y transacciones solo apropiadas a la era con contexto de poder adquisitivo real. Vocabulario y conceptos solo disponibles en esa era. Normas sociales, clase, género definen restricciones realistas. Sistemas legales, castigos, propiedad específicos de la era. Conocimiento médico estrictamente apropiado a la era. Nombres de NPCs apropiados a la era y región. Ropa, comida, arquitectura, transporte: precisos a la era. Sin marcos psicológicos/sociológicos modernos en ambientaciones históricas. Nombres de meses y calendarios adaptados a la era.
+
+IMPLICIT ATTRIBUTE DESCRIPTORS
+Sin estadísticas numéricas. Atributos como etiquetas cualitativas actualizadas automáticamente. Aplicadas al personaje, todos los NPCs y todos los animales. Estado físico: Saludable / Herido leve / Herido grave / Agotado / Hambriento / Enfermo / Debilitado / En forma / Robusto / Frágil / Agonizando. Condición mental: Lúcido / Estable / Traumatizado / Perturbado / Sereno / Desesperado / Resiliente / Ansioso / Disociado / Determinado / Al límite. Combate: Sin entrenamiento / Aprendiz / Competente / Experimentado / Veterano / Letal / Especialista en [tipo] / En desventaja / Desarmado. Social: Intimidante / Persuasivo / Reservado / Carismático / Desconfiado / Diplomático / Manipulador / Honesto por reputación. Conocimiento: Analfabeto / Letrado / Erudito / Ignorante del tema / Experto en [área] / Curioso / Sabio / Polímata. Condición social: Marginado / Campesino / Artesano / Comerciante / Noble / Muy influyente / Proscrito / Respetado / Temido / Desconocido. Reputación: Desconocido / Conocido localmente / Respetado / Temido / Odiado / Leyenda / Buscado por la ley. Relaciones: En deuda con [nombre] / Enemistado con [facción] / Aliado de [grupo] / Amado por [persona] / Ha traicionado a [nombre]. Animales: Doméstico / Salvaje / Herido / Territorial / Hambriento / Bien entrenado / Peligroso / Dócil / Viejo / Joven / Agresivo. Visibilidad de NPC basada en familiaridad, desconocidos = “???”, toggle en configuración los revela, cada descriptor tiene tooltip.
+
+PROFILE SCREEN
+Stats: total de partidas / total de años en juego vividos / causas de muerte / eras exploradas / tiempo total jugado. Árbol de Legado: gráfico de nodos, cada partida completada es un nodo, flechas muestran influencia, nodos clicables muestran resumen. Biblioteca de Momentos: grid de todas las imágenes generadas, con fecha en juego + nombre de partida, tap = pantalla completa con contexto narrativo. Logros: grid, bloqueado = “???”, desbloqueado = nombre + descripción + partida donde se logró. Historial de partidas: todas listadas, expandible a timeline de eventos clave, toggle de visibilidad por partida.
+
+SETTINGS SCREEN
+Toggle maestro de modo explícito + sub-toggles. Mostrar descriptores ocultos de NPCs: toggle. Perspectivas externas: toggle. Voz narrativa por defecto: selector. Tamaño de texto: Pequeño / Mediano / Grande. Generación de imágenes: toggle. Indicadores de estado de API: punto verde/rojo para Claude e Imagen. Idioma: Español (fijo).
+
+TUTORIAL / HELP SYSTEM
+Botón ⓘ en muchas secciones y campos. Abre explicación narrativa breve, atmosférica, en el tono del juego — no un tooltip seco. Aplicar a todos los campos de creación de personaje, todas las secciones del editor, ambos modos de juego, todos los paneles, todas las categorías de descriptores.
+
+TECHNICAL REQUIREMENTS
+Claude API streaming — texto en tiempo real. Acciones sugeridas cargan asincrónicamente sin bloquear la narración. Todos los botones ✦ DEBEN llamar a la API y mostrar resultados, ninguno decorativo. Imágenes: placeholder oscuro pulsante → fade in al cargar, URL guardada en estado, nunca regenerar al re-renderizar. Supabase: todos los datos de partida guardados. localStorage: backup completo vía Zustand persist. React Router v6 con historial correcto. Todas las transiciones animadas. PWA: manifest con tema oscuro (#0a0c0f), instalable en móvil. El mapa DEBE renderizar siempre — si está en negro es un bug que debe debuggearse y corregirse antes de marcar como completo.
+
+DESIGN SYSTEM
+Colors: Background #0a0c0f, Surface #0f1218, Surface elevated #141820, Border #1e2530, Text primary #eef2f8, Text secondary #c8d0dc, Text muted #5a6478, Accent blue #3d8eff, Accent teal #00d4a8, Accent amber #f5a623, Danger red #ff4444.
+Fonts: Headlines/UI: Syne (700–800). Narrative body: Lora (serif, 400–500). UI labels/mono: IBM Plex Mono.
+Rules: Sin fondos blancos. Sin gradientes púrpura. Sin fuentes del sistema. Cada elemento interactivo con estado hover + activo. Panels/overlays con fondo oscuro semitransparente con blur. Botones con ligera escala al presionar. Clima emocional con cambio de color sutil en borde del panel narrativo. Nada bloqueado ni placeholder excepto EXODUS.
+
+GAME NAMES — FINAL
+Game 1: “UNA VIDA” — Jugable — “Vive cualquier vida, en cualquier época, en la Tierra. Sin objetivos. Simplemente existe.”
+Game 2: “EXODUS” — PRÓXIMAMENTE — “La Tierra ya no existe. Encuentra un nuevo hogar.” — Bloqueado, solo pantalla de información, sin contenido funcional.
+
+Aplica todo lo que está en este documento sobre el proyecto existente sin eliminar nada que ya funcione. Todos los botones de IA deben funcionar. Ningún módulo bloqueado o placeholder. El resultado debe ser un motor de juego narrativo profesional, atmosférico y completamente funcional.​​​​​​​​​​​​​​​​

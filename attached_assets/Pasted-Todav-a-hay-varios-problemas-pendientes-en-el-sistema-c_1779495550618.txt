@@ -1,0 +1,79 @@
+Todavía hay varios problemas pendientes en el sistema completo del juego relacionados con consistencia de edición, formatos de texto, UI móvil y coherencia entre sistemas. Debes leer todo el contenido completo sin omitir nada, no asumir que algo ya está resuelto, y no dejar ninguna sección sin revisar. Al finalizar, debes entregar la respuesta de forma enumerada y clara con cada punto como estado final (implementado / parcial / no implementado), sin mezclar explicaciones sueltas.
+
+Además, es obligatorio que cualquier cambio o corrección que se haga NO rompa funcionalidades ya existentes que estén funcionando correctamente. El sistema debe corregirse por adición o parche, no por eliminación o reemplazo de sistemas que ya funcionan, a menos que se confirme explícitamente que están mal. No se debe degradar, eliminar ni alterar comportamiento correcto ya existente.
+
+SISTEMA DE FORMATO DE TEXTO UNIFICADO (CRÍTICO)
+El sistema de formato de texto NO está completo.
+
+Actualmente solo se ha restaurado parcialmente negrita y cursiva, pero esto no es suficiente. Se requiere un sistema completo de enriquecimiento de texto tipo Notion, Obsidian o ChatGPT, consistente en todo el juego.
+
+Debe existir como un sistema único y estable de formato que funcione en narración, secciones personalizadas, secciones creadas por IA, secciones nativas y memoria IA sin diferencias entre sí.
+
+El sistema debe permitir uso completo de formatos como negrita, cursiva, títulos, subtítulos, listas estructuradas, jerarquías de texto, combinaciones de formatos dentro del mismo bloque y renderizado consistente sin romper el contenido original.
+
+No debe ser un Markdown básico ni una implementación parcial por módulos, sino un sistema unificado de renderizado de texto enriquecido en todo el juego.
+
+EJEMPLOS DE FUNCIONES QUE DEBE SOPORTAR: negrita (** ), cursiva ( ), listas con “-”, listas numeradas, títulos tipo H1/H2/H3, estructuras anidadas tipo listas dentro de listas, bloques combinados (texto + lista + énfasis en el mismo campo), y renderizado consistente en todos los sistemas (narración, secciones personalizadas, IA, nativo, memoria IA), entre otros.
+
+SALTOS DE LÍNEA Y COMPORTAMIENTO DE TEXTO (CRÍTICO)
+Los saltos de línea siguen sin comportarse correctamente dentro de campos de texto y narrativa.
+
+El comportamiento actual aún no es natural ni consistente. Debe replicar exactamente la experiencia de editores reales como ChatGPT, Notion u Obsidian.
+
+Un Enter debe generar un salto limpio y único, sin duplicaciones, sin espacios exagerados y sin efectos artificiales.
+
+Lo escrito, lo guardado y lo renderizado deben coincidir exactamente, manteniendo fluidez visual y legibilidad natural.
+
+EJEMPLO DE IMPLEMENTACIÓN ACTUAL (INCORRECTA): \n →  (doble salto o espaciado excesivo)
+
+EJEMPLO CORRECTO ESPERADO: \n →  (salto único limpio sin duplicación ni espaciado adicional)
+
+Mejoralo.
+
+INTERFAZ MÓVIL Y USABILIDAD REAL (CRÍTICO)
+La interfaz en móvil sigue sin estar completamente resuelta.
+
+El problema NO es general en todos los botones, sino específico: el botón de editar (icono lápiz) dentro de los campos de secciones personalizadas NO aparece correctamente (como antes pasaba con otros botones, pero este es el único que sigue sin resolverse).
+
+Este botón debe:
+
+aparecer siempre visible igual que los demás controles (mover, eliminar, etc.)
+no depender de hover ni condiciones ocultas
+no quedar invisible ni desactivado en ningún estado
+Además, el ajuste general de UI no debe ser solo escalado de tamaño. Se debe:
+
+ajustar estructura y distribución de botones en secciones personalizadas, nativas, perfiles y demás sistemas
+reubicar botones cuando sea necesario para evitar solapamiento
+mejorar jerarquía visual para que no se sienta que solo “se agrandaron botones”
+garantizar separación clara entre acciones para evitar errores de pulsación
+SISTEMA DE PLANTILLAS (VERIFICACIÓN OBLIGATORIA)
+El sistema de plantillas parece implementado, pero no está verificado completamente.
+
+Debe confirmarse que funciona correctamente en creación, reutilización, persistencia y compatibilidad con partidas nuevas, guardadas e importadas.
+
+Si hay cualquier inconsistencia, debe corregirse.
+
+AUTO-CREACIÓN DE SECCIONES POR IA (VERIFICACIÓN OBLIGATORIA)
+El sistema de auto-creación de secciones por IA debe ser verificado en su totalidad.
+
+Debe confirmarse que las secciones creadas por IA se integran correctamente en el sistema, no generan duplicados, se pueden editar correctamente y mantienen coherencia con el resto del sistema del juego.
+
+Si algo no está funcionando como se espera, debe corregirse.
+
+LÓGICA Y COMPORTAMIENTO DE TIPOS DE CAMPOS (REVISIÓN GENERAL)
+Los tipos de campos en secciones personalizadas deben comportarse como un sistema unificado de edición avanzada, similar a herramientas como Notion, Obsidian o ChatGPT.
+
+No deben ser solo variaciones visuales, sino sistemas de datos coherentes con comportamiento real, consistencia interna, interacción fluida con la IA y legibilidad estable en todos los casos.
+
+MEMORIA IA (UNIFICACIÓN DE FORMATO)
+La sección de Memoria IA debe tener exactamente el mismo sistema de formato y comportamiento que el resto del juego.
+
+Actualmente esto no está garantizado, por lo que debe unificarse completamente sin excepciones.
+
+COMPATIBILIDAD GENERAL DEL SISTEMA
+Todo el sistema debe funcionar correctamente en partidas nuevas, guardadas e importadas sin ninguna excepción ni degradación de funciones.
+
+REPORTE FINAL OBLIGATORIO
+Al finalizar los cambios, debe entregarse obligatoriamente un estado claro indicando para cada punto si está implementado, parcialmente implementado o no implementado.
+
+No se aceptan respuestas sin verificación explícita ni sin estados claros por cada punto.

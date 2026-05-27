@@ -1,0 +1,113 @@
+MENÚ PRINCIPAL — SISTEMA DE PARTIDAS
+
+El menú principal debe incluir dos opciones funcionales:
+
+1. IMPORTAR PARTIDA  
+2. CARGAR PARTIDA  
+
+────────────────────────────
+
+IMPORTAR PARTIDA
+
+OBJETIVO:
+Permitir al usuario integrar una partida externa de forma completamente funcional, completa y coherente, incluyendo compatibilidad con futuras expansiones del sistema.
+
+COMPORTAMIENTO:
+
+- Permitir seleccionar un archivo JSON desde el dispositivo
+- Procesar el archivo automáticamente
+- Integrar la partida sin fallos
+
+- Al completarse:
+  - la partida queda disponible inmediatamente en “Cargar partida”
+  - se puede abrir sin errores
+  - todos los datos se restauran correctamente
+
+REQUISITOS CRÍTICOS:
+
+- Debe funcionar SIEMPRE
+- No puede fallar bajo ninguna circunstancia
+- No generar errores visibles ni silenciosos
+- No dejar la partida en estado incompleto
+- No corromper datos existentes
+- Mantener estabilidad total del sistema en todo momento
+
+────────────────────────────
+
+REGLA DE ADAPTACIÓN A EXPANSIONES (OBLIGATORIA)
+
+El sistema debe soportar correctamente partidas creadas antes de que existieran nuevas secciones, campos o estructuras.
+
+- Si un elemento no existe porque fue añadido posteriormente:
+  - debe crearse automáticamente
+  - debe inicializarse correctamente
+  - debe ser coherente con el resto del estado existente
+
+- Si el elemento depende de otros datos:
+  - debe generarse en base a la información disponible
+  - manteniendo coherencia narrativa y estructural
+
+- El sistema debe adaptar la partida automáticamente:
+  - integrando nuevas secciones, campos o estructuras
+  - sin eliminar información previa
+  - sin romper la lógica interna
+
+────────────────────────────
+
+REGLA DE INTEGRIDAD DE DATOS (OBLIGATORIA)
+
+- Todos los elementos necesarios deben existir tras la importación
+
+- Si algún elemento falta:
+  - debe generarse automáticamente
+  - debe ser coherente con el contexto
+  - debe integrarse correctamente en el sistema
+
+- Si faltan múltiples elementos:
+  - el sistema debe reconstruirlos de forma lógica
+  - garantizando una partida completamente jugable
+
+- Está PROHIBIDO:
+  - dejar elementos críticos vacíos
+  - romper la estructura interna
+  - generar datos incoherentes
+
+- La partida importada debe quedar SIEMPRE completamente funcional, independientemente de cuándo fue creada
+
+────────────────────────────
+
+CARGAR PARTIDA
+
+OBJETIVO:
+Permitir al usuario continuar una partida previamente guardada.
+
+COMPORTAMIENTO:
+
+- Mostrar lista de partidas disponibles
+- Cada partida debe mostrar:
+  - nombre (si existe)
+  - fecha de guardado
+  - breve descripción o estado
+
+- Al seleccionar una partida:
+  - cargar completamente su estado
+  - restaurar memoria
+  - restaurar historial reciente
+
+- Si no hay partidas:
+  - mostrar mensaje claro: “No hay partidas guardadas”
+
+REQUISITOS:
+
+- Las partidas deben almacenarse de forma persistente
+- El sistema debe poder manejar múltiples partidas
+- No sobrescribir datos existentes al cargar
+
+────────────────────────────
+
+REGLAS GENERALES
+
+- No eliminar partidas existentes al importar
+- No sobrescribir automáticamente sin confirmación
+- Mantener integridad total de los datos
+- Garantizar que el usuario siempre pueda recuperar sus partidas
